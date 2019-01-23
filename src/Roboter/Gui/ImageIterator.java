@@ -1,49 +1,45 @@
 package Roboter.Gui;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
 
-public class ImageIterator implements Iterator<Raster> {
+public abstract class ImageIterator implements Iterator<Raster> {
 
     private final BufferedImage image;
     private final int rasterSize;
     private int x;
     private int y;
-    public ImageIterator(BufferedImage image, int rasterSize)
+
+    public enum Type{X,Y};
+    public static ImageIterator getIterator(BufferedImage image, int rasterSize)
+    {
+        return new XIterator(image,rasterSize);
+    }
+
+    public static ImageIterator getIterator(Type type, BufferedImage image, int rasterSize)
+    {
+        switch (type)
+        {
+            case X:
+                return new XIterator(image,rasterSize);
+            case Y:
+                return new YIterator(image,rasterSize);
+                default:
+                    throw new IllegalStateException("Wrong Type");
+        }
+    }
+
+    protected ImageIterator(BufferedImage image, int rasterSize)
     {
         this.image = image;
         this.rasterSize = rasterSize;
 
         x = 0;
         y = 0;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return (x + rasterSize) < image.getWidth() && (y+rasterSize) < image.getHeight();
-    }
-
-    @Override
-    public Raster next() {
-
-        if(!hasNext())
-            return null;
-
-        Color[][] colors = new Color[rasterSize][rasterSize];
-
-        for(int i = 0; i < rasterSize; i++)
-        {
-            for(int j = 0; j < rasterSize; j++)
-            {
-
-                colors[i][j] = new Color(image.getRGB(i+rasterSize, j +rasterSize));
-            }
-        }
-        x += rasterSize;
-        y += rasterSize;
-        return new Raster(x, y, colors);
     }
 
     @Override
@@ -55,5 +51,93 @@ public class ImageIterator implements Iterator<Raster> {
     @Override
     public void forEachRemaining(Consumer action) {
         //does nothing
+    }
+
+    private static class XIterator extends ImageIterator
+    {
+        private XIterator(BufferedImage image, int rasterSize)
+        {
+            super(image, rasterSize);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return (super.y + super.rasterSize) < super.image.getHeight();
+        }
+
+        @Override
+        public Raster next() {
+
+            if(!hasNext())
+                return null;
+
+            List<Color[]> colorList = new ArrayList<>(super.rasterSize);
+
+            for(int y = 0; y < super.rasterSize; y++)
+            {
+                Color[] colors = new Color[super.rasterSize];
+                for(int x = 0; x < super.rasterSize; x++)
+                {
+                    int xCord = Math.min(super.x + x, super.image.getWidth()-1);
+                    int yCord = Math.min(super.y + y, super.image.getWidth()-1);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+            Raster raster = new Raster(super.x, super.y, colorList, super.rasterSize);
+
+            super.x += super.rasterSize;
+            if(super.x > super.image.getWidth()) {
+                super.x = 0;
+                super.y += super.rasterSize;
+            }
+
+            return raster;
+        }
+    }
+
+    private static class YIterator extends ImageIterator
+    {
+        private YIterator(BufferedImage image, int rasterSize)
+        {
+            super(image, rasterSize);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return (super.x + super.rasterSize) < super.image.getWidth();
+        }
+
+        @Override
+        public Raster next() {
+
+            if(!hasNext())
+                return null;
+
+            List<Color[]> colorList = new ArrayList<>(super.rasterSize);
+
+            for(int x = 0; x < super.rasterSize; x++)
+            {
+                Color[] colors = new Color[super.rasterSize];
+                for(int y = 0; y < super.rasterSize; y++)
+                {
+                    int xCord = Math.min(super.x + x, super.image.getWidth()-1);
+                    int yCord = Math.min(super.y + y, super.image.getHeight()-1);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+            Raster raster = new Raster(super.x, super.y, colorList, super.rasterSize);
+
+            super.y += super.rasterSize;
+            if(super.y > super.image.getHeight()) {
+                super.y = 0;
+                super.x += super.rasterSize;
+            }
+
+            return raster;
+        }
     }
 }

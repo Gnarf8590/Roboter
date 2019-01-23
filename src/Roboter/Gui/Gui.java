@@ -18,7 +18,7 @@ public class Gui implements Runnable
 
     public Gui(String file) throws IOException {
         imageFile = Paths.get(file);
-        this.original = ImageIO.read();
+        this.original = ImageIO.read(imageFile.toFile());
     }
 
     public Gui(BufferedImage original)

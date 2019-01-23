@@ -3,6 +3,8 @@ package Roboter.Gui;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static Roboter.Gui.ImageIterator.Type.X;
+import static Roboter.Gui.ImageIterator.Type.Y;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.opencv.highgui.HighGui.waitKey;
 
@@ -35,7 +37,7 @@ public class ImageUtil
 
     private static Coordinates getStart(BufferedImage image, Color colorToFind)
     {
-        ImageIterator iter = new ImageIterator(image,RASTER_SIZE);
+        ImageIterator iter = ImageIterator.getIterator(X, image, RASTER_SIZE);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
@@ -54,7 +56,7 @@ public class ImageUtil
         int END_Y = -1;
         int END_X = -1;
 
-        ImageIterator iter1 = new ImageIterator(image,RASTER_SIZE);
+        ImageIterator iter1 = ImageIterator.getIterator(Y,image,RASTER_SIZE);
         while (iter1.hasNext())
         {
             Raster raster = iter1.next();
@@ -65,7 +67,7 @@ public class ImageUtil
             }
         }
 
-        ImageIterator iter2 = new ImageIterator(image,RASTER_SIZE);
+        ImageIterator iter2 = ImageIterator.getIterator(X, image, RASTER_SIZE);
         while (iter2.hasNext())
         {
             Raster raster = iter2.next();
@@ -98,7 +100,7 @@ public class ImageUtil
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), TYPE_INT_RGB);
         Color black = new Color(200,200,200);
 
-        ImageIterator iter = new ImageIterator(image,RASTER_SIZE);
+        ImageIterator iter = ImageIterator.getIterator(image, RASTER_SIZE);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
