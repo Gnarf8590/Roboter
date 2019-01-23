@@ -20,6 +20,7 @@ public class Gui implements Runnable
     public Gui(BufferedImage original)
     {
         imageFile = Paths.get("image_Papier.jpg");
+        //reasda
         this.original = original;
     }
     public Gui(String path)
