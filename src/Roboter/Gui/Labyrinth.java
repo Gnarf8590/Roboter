@@ -23,7 +23,14 @@ public class Labyrinth {
 		System.out.println(start.toString());
 		System.out.println(end.toString());
 	}
-	
+
+
+	public isLeft(){
+
+	}
+	public isRight(){
+
+	}
 	
 	public Coordinates findStart() {
 		Coordinates start = null;
