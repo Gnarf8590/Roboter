@@ -16,6 +16,11 @@ public class Gui implements Runnable
     private BufferedImage original;
     private Path imageFile;
 
+    public Gui(String file) throws IOException {
+        imageFile = Paths.get(file);
+        this.original = ImageIO.read();
+    }
+
     public Gui(BufferedImage original)
     {
         imageFile = Paths.get("image_Papier.jpg");
@@ -29,7 +34,7 @@ public class Gui implements Runnable
         if(Main.DEBUG)
             writeImage(image, new File("original_cut.png"));
         
-        image = ImageUtil.reColor(image, false);
+        //image = ImageUtil.reColor(image, false);
 
         if (Main.DEBUG)
             writeImage(image, new File("median_cut.png"));

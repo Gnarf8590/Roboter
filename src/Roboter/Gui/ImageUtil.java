@@ -35,38 +35,16 @@ public class ImageUtil
 
     private static Coordinates getStart(BufferedImage image, Color colorToFind)
     {
-        int rasterSize = 5;
-
-        for(int y = 0; y < image.getHeight(); y += rasterSize)
+        ImageIterator iter = new ImageIterator(image,RASTER_SIZE);
+        while (iter.hasNext())
         {
-            for(int x = 0; x < image.getWidth(); x+=rasterSize)
+            Raster raster = iter.next();
+            if(smaller(raster.getColor(), colorToFind))
             {
-                int red = 0;
-                int green = 0;
-                int blue = 0;
-
-                for(int i = 0; i < rasterSize; i++)
-                {
-                    for(int j = 0; j < rasterSize; j++)
-                    {
-                        Color color = new Color(image.getRGB(x + i, y + j));
-                        red     += color.getRed();
-                        green   += color.getGreen();
-                        blue    += color.getBlue();
-                    }
-                }
-
-                red   = red   / (RASTER_SIZE * RASTER_SIZE);
-                green = green / (RASTER_SIZE * RASTER_SIZE);
-                blue  = blue  / (RASTER_SIZE * RASTER_SIZE);
-
-                Color median = new Color(red, green, blue);
-                if(smaller(median, colorToFind))
-                {
-                    return new Coordinates(x+(rasterSize/2), y+(rasterSize/2));
-                }
+                return raster.getMiddle();
             }
         }
+
         return null;
     }
 
@@ -76,64 +54,29 @@ public class ImageUtil
         int END_Y = -1;
         int END_X = -1;
 
-        for(int y = 0; y < image.getHeight() && END_Y == -1; y+= RASTER_SIZE)
+        ImageIterator iter1 = new ImageIterator(image,RASTER_SIZE);
+        while (iter1.hasNext())
         {
-            int red = 0;
-            int green = 0;
-            int blue = 0;
-
-            for(int i = 0; i < RASTER_SIZE; i++)
-            {
-                for(int j = 0; j < RASTER_SIZE; j++)
-                {
-                    Color color = new Color(image.getRGB(i, y + j));
-                    red     += color.getRed();
-                    green   += color.getGreen();
-                    blue    += color.getBlue();
-                }
-            }
-
-            red   = red   / (RASTER_SIZE * RASTER_SIZE);
-            green = green / (RASTER_SIZE * RASTER_SIZE);
-            blue  = blue  / (RASTER_SIZE * RASTER_SIZE);
-
-            Color median = new Color(red, green, blue);
-
-            if(greater(median, colorToFind))
+            Raster raster = iter1.next();
+            if(greater(raster.getColor(), colorToFind))
             {
                 if(++counterY >= MAX_GAP)
-                    END_Y = y;
+                    END_Y = raster.getY();
             }
         }
 
-        int counterX = 0;
-        for(int x = 0; x < image.getWidth() && END_X == -1; x += RASTER_SIZE)
+        ImageIterator iter2 = new ImageIterator(image,RASTER_SIZE);
+        while (iter2.hasNext())
         {
-            int red = 0;
-            int green = 0;
-            int blue = 0;
-
-            for(int i = 0; i < RASTER_SIZE; i++)
-            {
-                for(int j = 0; j < RASTER_SIZE; j++)
-                {
-                    Color color = new Color(image.getRGB(x + i, j));
-                    red     += color.getRed();
-                    green   += color.getGreen();
-                    blue    += color.getBlue();
-                }
-            }
-
-            red   = red   / (RASTER_SIZE * RASTER_SIZE);
-            green = green / (RASTER_SIZE * RASTER_SIZE);
-            blue  = blue  / (RASTER_SIZE * RASTER_SIZE);
-
-            Color median = new Color(red, green, blue);
+            Raster raster = iter2.next();
+            Color median = raster.getColor();
             if(greater(median, colorToFind))
             {
-                END_X = x;
+                END_X = raster.getX();
             }
         }
+
+
         return new Coordinates(END_X, END_Y);
     }
 
@@ -154,47 +97,29 @@ public class ImageUtil
     {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), TYPE_INT_RGB);
         Color black = new Color(200,200,200);
-        for(int y = 0; y < image.getHeight(); y += RASTER_RECOLOR)
+
+        ImageIterator iter = new ImageIterator(image,RASTER_SIZE);
+        while (iter.hasNext())
         {
-            for (int x = 0; x < image.getHeight(); x += RASTER_RECOLOR)
+            Raster raster = iter.next();
+            Color color = raster.getColor();
+            if(set)
             {
-                int red = 0;
-                int green = 0;
-                int blue = 0;
+                if(smaller(raster.getColor(), black))
+                    color = Color.BLACK;
+                else
+                    color = Color.WHITE;
+            }
 
-                for(int i = 0; i < RASTER_RECOLOR; i++)
+            for(int i = 0; i < RASTER_RECOLOR; i++)
+            {
+                for(int j = 0; j < RASTER_RECOLOR; j++)
                 {
-                    for(int j = 0; j < RASTER_RECOLOR; j++)
-                    {
-                        Color color = new Color(image.getRGB(x + i, y + j));
-                        red     += color.getRed();
-                        green   += color.getGreen();
-                        blue    += color.getBlue();
-                    }
-                }
-
-                red   = red   / (RASTER_RECOLOR * RASTER_RECOLOR);
-                green = green / (RASTER_RECOLOR * RASTER_RECOLOR);
-                blue  = blue  / (RASTER_RECOLOR * RASTER_RECOLOR);
-
-                Color color = new Color(red,green,blue);
-
-                if(set)
-                {
-                    if(smaller(color, black))
-                        color = Color.BLACK;
-                    else
-                        color = Color.WHITE;
-                }
-                for(int i = 0; i < RASTER_RECOLOR; i++)
-                {
-                    for(int j = 0; j < RASTER_RECOLOR; j++)
-                    {
-                        newImage.setRGB(x+i,y+j, color.getRGB());
-                    }
+                    newImage.setRGB(raster.getX()+i,raster.getY()+j, color.getRGB());
                 }
             }
         }
+
         return newImage;
     }
 }

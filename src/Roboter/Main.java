@@ -15,8 +15,8 @@ public class Main
     //TRUE = Debug Messages
     public static final boolean DEBUG = false;
     private static final ExecutorService service = Executors.newCachedThreadPool();
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws IOException {
+        /*
         ImageServer imageServer = new ImageServer();
         Mat image = imageServer.readImage();
 
@@ -25,9 +25,11 @@ public class Main
         if(DEBUG)
             imageServer.writeToFile(bufferedImage);
 
-        Gui gui = new Gui(bufferedImage);
+    */
+        Gui gui = new Gui("image_Papier.jpg");
         service.submit(gui);
 
+/*
         try (RoboterServer roboterServer = new RoboterServer())
         {
             roboterServer.moveToStartPosition();
@@ -38,5 +40,6 @@ public class Main
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 }
