@@ -25,9 +25,6 @@ public class ImageUtil
         System.out.println(start);
         Coordinates end = getEnd(cut, BLACK_START);
 
-        if(end == null)
-            throw new IllegalStateException("Image no white!!!!!!!!!!");
-
 
         end = new Coordinates(start.x + end.x, start.y + end.y);
 
@@ -37,7 +34,7 @@ public class ImageUtil
 
     private static Coordinates getStart(BufferedImage image, Color colorToFind)
     {
-        ImageIterator iter = ImageIterator.getIterator(X, image, RASTER_SIZE);
+        ImageIterator iter = ImageIterator.getIterator(image,RASTER_SIZE);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
@@ -56,10 +53,12 @@ public class ImageUtil
         int END_Y = -1;
         int END_X = -1;
 
-        ImageIterator iter1 = ImageIterator.getIterator(Y,image,RASTER_SIZE);
-        while (iter1.hasNext())
+        ImageIterator imageIteratorY = ImageIterator.getIterator(Y, image, RASTER_SIZE);
+
+        while (imageIteratorY.hasNext())
         {
-            Raster raster = iter1.next();
+            Raster raster = imageIteratorY.next();
+
             if(greater(raster.getColor(), colorToFind))
             {
                 if(++counterY >= MAX_GAP)
@@ -67,29 +66,29 @@ public class ImageUtil
             }
         }
 
-        ImageIterator iter2 = ImageIterator.getIterator(X, image, RASTER_SIZE);
-        while (iter2.hasNext())
+        ImageIterator imageIteratorX = ImageIterator.getIterator(X, image, RASTER_SIZE);
+
+        while (imageIteratorX.hasNext())
         {
-            Raster raster = iter2.next();
-            Color median = raster.getColor();
-            if(greater(median, colorToFind))
+            Raster raster = imageIteratorX.next();
+
+            if(greater(raster.getColor(), colorToFind))
             {
                 END_X = raster.getX();
             }
         }
 
-
         return new Coordinates(END_X, END_Y);
     }
 
     //ONLY FOR GREY COLORS
-    private static boolean smaller(Color RGB, Color toMatch)
+    public static boolean smaller(Color RGB, Color toMatch)
     {
         return RGB.getBlue() <= toMatch.getBlue() && RGB.getGreen() <= toMatch.getGreen() && RGB.getRed() <= toMatch.getRed();
     }
 
     //ONLY FOR GREY COLORS
-    private static boolean greater(Color RGB, Color toMatch)
+    public static boolean greater(Color RGB, Color toMatch)
     {
         return RGB.getBlue() >= toMatch.getBlue() && RGB.getGreen() >= toMatch.getGreen() && RGB.getRed() >= toMatch.getRed();
     }
@@ -100,7 +99,7 @@ public class ImageUtil
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), TYPE_INT_RGB);
         Color black = new Color(200,200,200);
 
-        ImageIterator iter = ImageIterator.getIterator(image, RASTER_SIZE);
+        ImageIterator iter =ImageIterator.getIterator(image,RASTER_SIZE);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
@@ -112,7 +111,6 @@ public class ImageUtil
                 else
                     color = Color.WHITE;
             }
-
             for(int i = 0; i < RASTER_RECOLOR; i++)
             {
                 for(int j = 0; j < RASTER_RECOLOR; j++)

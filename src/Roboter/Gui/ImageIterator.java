@@ -42,6 +42,45 @@ public abstract class ImageIterator implements Iterator<Raster> {
         y = 0;
     }
 
+    public float[] get_count_float() {
+        float xcount = 0;
+        float ycount = 0;
+
+        if(image.getWidth()%rasterSize == 0)
+            xcount = image.getWidth()/rasterSize;
+        else
+        {
+            xcount = image.getWidth()/rasterSize;
+            xcount += (image.getWidth()%rasterSize / 10);
+        }
+        if(image.getHeight()%rasterSize == 0)
+            ycount = image.getHeight()/rasterSize;
+        else
+        {
+            ycount = image.getHeight()/rasterSize;
+            ycount += (image.getHeight()%rasterSize / 10);
+
+        }
+
+        float[] r = new float[1];
+        r[0] = xcount;
+        r[1] = ycount;
+
+        return r;
+    }
+
+    public int get_count_int() {
+        int xcount = 0;
+        int ycount = 0;
+
+        xcount = image.getWidth()/rasterSize;
+
+        ycount = image.getHeight()/rasterSize;
+
+        return xcount + ycount;
+
+    }
+
     @Override
     public void remove()
     {
