@@ -9,14 +9,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Gui implements Runnable
 {
     private BufferedImage original;
+    private BufferedImage cut;
     private Path imageFile;
     private Labyrinth labyrinth;
-
     public Gui()
     {
         try
@@ -30,24 +31,30 @@ public class Gui implements Runnable
 
     public void run()
     {
-        BufferedImage image = ImageUtil.cutToSize(original);
+        cut = ImageUtil.cutToSize(original);
+
 
         if(Main.DEBUG)
-            writeImage(image, new File("original_cut.png"));
+            writeImage(cut, new File("original_cut.png"));
 
-        labyrinth = new Labyrinth(image);
+        labyrinth = new Labyrinth(cut);
+        List<Coordinates> path = labyrinth.run();
+        path = mapCoordinates(path);
 
-        image = ImageUtil.reColor(image, false);
 
-        if (Main.DEBUG)
-            writeImage(image, new File("median_cut.png"));
 
-        image = ImageUtil.reColor(image, true);
+        writeImage(ImageUtil.reColor(cut, false), new File("cut.png"));
+        writeImage(ImageUtil.reColor(cut, true), new File("black_white_cut.png"));
 
-        if (Main.DEBUG)
-            writeImage(image, new File("black_white_cut.png"));
+        Frame frame = new Frame(cut);
+    }
 
-        Frame frame = new Frame(image);
+    private List<Coordinates> mapCoordinates(List<Coordinates> old)
+    {
+        int mapX = original.getWidth() - cut.getWidth();
+        int mapY = original.getHeight() - cut.getHeight();
+
+        return old.stream().map(e -> new Coordinates(e.x+mapX, e.y +mapY)).collect(Collectors.toList());
     }
 
     public BufferedImage loadImage(Path imageFile) throws IOException

@@ -2,7 +2,9 @@ package Roboter.Gui;
 
 import java.awt.image.BufferedImage;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Labyrinth {
 
@@ -22,6 +24,11 @@ public class Labyrinth {
 		
 		System.out.println(start.toString());
 		System.out.println(end.toString());
+	}
+
+	public List<Coordinates> run()
+	{
+		return new ArrayList<>();
 	}
 
 
