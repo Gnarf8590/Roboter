@@ -25,11 +25,14 @@ public class Labyrinth {
 	}
 
 
-	public isLeft(){
-
+	public boolean isLeft()
+	{
+		return false;
 	}
-	public isRight(){
 
+	public boolean isRight()
+	{
+		return false;
 	}
 	
 	public Coordinates findStart() {

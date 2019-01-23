@@ -17,15 +17,15 @@ public class Gui implements Runnable
     private Path imageFile;
     private Labyrinth labyrinth;
 
-    public Gui(BufferedImage original)
+    public Gui()
     {
-        imageFile = Paths.get("image_Papier.jpg");
-        //reasda
-        this.original = original;
-    }
-    public Gui(String path)
-    {
-        imageFile = Paths.get(path);;
+        try
+        {
+            original = ImageIO.read(new File("image_Papier"));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void run()
@@ -35,7 +35,7 @@ public class Gui implements Runnable
         if(Main.DEBUG)
             writeImage(image, new File("original_cut.png"));
 
-        	labyrinth = new Labyrinth(image);
+        labyrinth = new Labyrinth(image);
 
         image = ImageUtil.reColor(image, false);
 

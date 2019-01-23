@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import static Roboter.Gui.ImageIterator.Type.X;
 import static Roboter.Gui.ImageIterator.Type.Y;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.opencv.highgui.HighGui.waitKey;
+
 
 public class ImageUtil
 {

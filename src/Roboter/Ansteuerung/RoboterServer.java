@@ -1,5 +1,7 @@
 package Roboter.Ansteuerung;
 
+import Roboter.Main;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +47,8 @@ public class RoboterServer implements AutoCloseable
 
     public void send(String cmd) throws IOException
     {
-        System.out.println("SEND: "+cmd);
+        if(Main.DEBUG)
+            System.out.println("SEND: "+cmd);
         writer.write(cmd.getBytes(StandardCharsets.US_ASCII));
         //writer.newLine();
         //writer.flush();
@@ -57,7 +60,8 @@ public class RoboterServer implements AutoCloseable
         reader.read(bytes);
         String string = new String(bytes);
 
-        System.out.println("RECEIVE: "+string);
+        if(Main.DEBUG)
+            System.out.println("RECEIVE: "+string);
         return string;
     }
 

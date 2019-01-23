@@ -25,7 +25,7 @@ public class Main
         if(DEBUG)
             imageServer.writeToFile(bufferedImage);
 */
-        Gui gui = new Gui("image_Papier.jpg");
+        Gui gui = new Gui();
         gui.run();
         /*
         service.submit(gui);
