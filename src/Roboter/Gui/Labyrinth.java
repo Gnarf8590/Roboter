@@ -32,16 +32,47 @@ public class Labyrinth {
 	}
 
 
-	public boolean isLeft()
+	public boolean isLeftPath()
 	{
-		return false;
+		Raster t_raster = i_iterator.getNext();
+		
+		if( ImageUtil.greater(t_raster.getColor(),white))
+			return true;
+		else
+			return false;
 	}
 
-	public boolean isRight()
+	public boolean isRightPath()
 	{
-		return false;
+		Raster t_raster = i_iterator.getPrev();
+		
+		if( ImageUtil.greater(t_raster.getColor(),white))
+			return true;
+		else
+			return false;
 	}
 	
+	public boolean isUpPath()
+	{
+		Raster t_raster = i_iterator.getPrev();
+		
+		if( ImageUtil.greater(t_raster.getColor(),white))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean isDownPath()
+	{
+		Raster t_raster = i_iterator.getPrev();
+		
+		if( ImageUtil.greater(t_raster.getColor(),white))
+			return true;
+		else
+			return false;
+	}
+	
+
 	public Coordinates findStart() {
 		Coordinates start = null;
 		
