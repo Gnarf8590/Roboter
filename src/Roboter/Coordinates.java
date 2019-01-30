@@ -1,4 +1,4 @@
-package Roboter.Gui;
+package Roboter;
 
 import java.util.Objects;
 

@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 
-public class RoboterServer implements AutoCloseable
+public class RobotControl implements AutoCloseable
 {
     private static final Position START = new Position(0, -500, 350, 180, 0, 50);
     private static final Position KAMERA = new Position(410.28, -35.86, 528.72, 177.67, 1.46, 146.29);
@@ -18,7 +18,7 @@ public class RoboterServer implements AutoCloseable
     private InputStream reader;
 
     private boolean isHandOn = false;
-    public RoboterServer()
+    public RobotControl()
     {
         try
         {

@@ -1,4 +1,6 @@
-package Roboter.Gui;
+package Roboter;
+
+import Roboter.Gui.Raster;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

@@ -1,12 +1,11 @@
 package Roboter;
 
+import Roboter.Ansteuerung.Control;
+import Roboter.DEBUG_KLASSEN.Dummy_Control;
+import Roboter.DEBUG_KLASSEN.Dummy_Labyrinth;
 import Roboter.Gui.Gui;
-import Roboter.Ansteuerung.ImageServer;
-import Roboter.Ansteuerung.RoboterServer;
-import org.opencv.core.Mat;
+import Roboter.Labyrinth.LabyrinthControl;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,33 +13,11 @@ public class Main
 {
     //TRUE = Debug Messages
     public static final boolean DEBUG = false;
-    private static final ExecutorService service = Executors.newCachedThreadPool();
     public static void main(String[] args)
     {
-       /* ImageServer imageServer = new ImageServer();
-        Mat image = imageServer.readImage();
+        Control control = new Dummy_Control();
+        LabyrinthControl labyrinthControl = new Dummy_Labyrinth();
 
-        BufferedImage bufferedImage = imageServer.convertToImage(image);
-
-        if(DEBUG)
-            imageServer.writeToFile(bufferedImage);
-*/
-        Gui gui = new Gui();
-        gui.run();
-        /*
-        service.submit(gui);
-        
-
-        try (RoboterServer roboterServer = new RoboterServer())
-        {
-            roboterServer.moveToStartPosition();
-            roboterServer.waitBetweenMoves();
-            roboterServer.moveForCamera();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+        Gui gui = new Gui(control, labyrinthControl);
     }
 }

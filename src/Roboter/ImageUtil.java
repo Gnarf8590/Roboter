@@ -1,10 +1,17 @@
-package Roboter.Gui;
+package Roboter;
 
+import Roboter.Gui.Raster;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 
-import static Roboter.Gui.ImageIterator.Type.X;
-import static Roboter.Gui.ImageIterator.Type.Y;
+import static Roboter.ImageIterator.Type.X;
+import static Roboter.ImageIterator.Type.Y;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 
@@ -32,7 +39,13 @@ public class ImageUtil
 
         System.out.println(start);
         System.out.println(end);
-        return image.getSubimage(start.x, start.y, end.x-start.x, end.y-start.y);
+
+        BufferedImage img = image.getSubimage(start.x, start.y,end.x-start.x, end.y-start.y); //fill in the corners of the desired crop location here
+        BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics g = copyOfImage.createGraphics();
+        g.drawImage(img, 0, 0, null);
+        return copyOfImage; //or use it however you want
+        //return image.getSubimage(start.x, start.y, end.x-start.x, end.y-start.y);
     }
 
     private static Coordinates getStart(BufferedImage image, Color colorToFind, int rastersize)
@@ -134,5 +147,23 @@ public class ImageUtil
         }
 
         return newImage;
+    }
+
+    public static BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    public static void writeImage(BufferedImage image, File file)
+    {
+        try
+        {
+            ImageIO.write(image,"png", file);
+        }catch (IOException ioE)
+        {
+
+        }
     }
 }

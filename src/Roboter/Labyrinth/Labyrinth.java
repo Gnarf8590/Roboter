@@ -1,4 +1,9 @@
-package Roboter.Gui;
+package Roboter.Labyrinth;
+
+import Roboter.Coordinates;
+import Roboter.ImageIterator;
+import Roboter.ImageUtil;
+import Roboter.Gui.Raster;
 
 import java.awt.image.BufferedImage;
 
@@ -10,7 +15,7 @@ public class Labyrinth {
 
 	public BufferedImage img;
 	int rastersize = 5;
-	ImageIterator i_iterator = ImageIterator.getIterator(img,rastersize);
+	ImageIterator i_iterator = ImageIterator.getIterator(img, rastersize);
 	Color white = new Color(200,200,200);
 	Color black = new Color(50,50,50);
 	private Coordinates start;
@@ -36,7 +41,7 @@ public class Labyrinth {
 	{
 		Raster t_raster = i_iterator.getNext();
 		
-		if( ImageUtil.greater(t_raster.getColor(),white))
+		if( ImageUtil.greater(t_raster.getColor(), white))
 			return true;
 		else
 			return false;
