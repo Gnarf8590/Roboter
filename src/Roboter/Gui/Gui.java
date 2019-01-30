@@ -31,20 +31,19 @@ public class Gui implements Runnable
 
     public void run()
     {
-        cut = ImageUtil.cutToSize(original);
+        original = ImageUtil.reColor(original, true,1);
+        cut = ImageUtil.cutToSize(original,1);
 
         //labyrinth = new Labyrinth(cut);
         //List<Coordinates> path = labyrinth.run();
         //path = mapCoordinates(path);
 
 
-
+        //Image Output
         writeImage(cut, new File("original_cut.png"));
         writeImage(ImageUtil.reColor(cut, false), new File("cut.png"));
-
-        BufferedImage blackWhite = ImageUtil.reColor(cut, true);
-        writeImage(blackWhite, new File("black_white_cut.png"));
-        writeImage(ImageUtil.reColor(blackWhite, true,10), new File("black_white_cut_new.png"));
+        writeImage(ImageUtil.reColor(original, true,1), new File("ibu.png"));
+        writeImage(ImageUtil.reColor(cut, true), new File("black_white_cut.png"));
 
         Frame frame = new Frame(cut);
     }

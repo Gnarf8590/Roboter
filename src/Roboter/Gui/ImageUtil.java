@@ -13,16 +13,20 @@ public class ImageUtil
     private static final Color BLACK_START = new Color(180,180,180);
     private static final int RASTER_SIZE = 5;
     private static final int RASTER_RECOLOR = 5;
-    private static final int MAX_GAP = 50 / RASTER_SIZE;
+    private static final int MAX_GAP = 40;
 
     public static BufferedImage cutToSize(BufferedImage image)
     {
-        Coordinates start = getStart(image, BLACK_START);
+        return cutToSize(image, RASTER_SIZE);
+    }
+    public static BufferedImage cutToSize(BufferedImage image, int rastersize)
+    {
+        Coordinates start = getStart(image, BLACK_START, rastersize);
         if(start == null)
             throw new IllegalStateException("Image no black!!!!!!!!!!");
         BufferedImage cut = image.getSubimage(start.x, start.y, image.getWidth() - start.x, image.getHeight() - start.y);
 
-        Coordinates end = getEnd(cut, BLACK_START);
+        Coordinates end = getEnd(cut, BLACK_START, rastersize);
 
         end = new Coordinates(start.x + end.x, start.y + end.y);
 
@@ -31,9 +35,9 @@ public class ImageUtil
         return image.getSubimage(start.x, start.y, end.x-start.x, end.y-start.y);
     }
 
-    private static Coordinates getStart(BufferedImage image, Color colorToFind)
+    private static Coordinates getStart(BufferedImage image, Color colorToFind, int rastersize)
     {
-        ImageIterator iter = ImageIterator.getIterator(image,RASTER_SIZE);
+        ImageIterator iter = ImageIterator.getIterator(image,rastersize);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
@@ -46,13 +50,13 @@ public class ImageUtil
         return null;
     }
 
-    private static Coordinates getEnd(BufferedImage image, Color colorToFind)
+    private static Coordinates getEnd(BufferedImage image, Color colorToFind, int rastersize)
     {
         int counterY = 0;
         int END_Y = -1;
         int END_X = -1;
 
-        ImageIterator imageIteratorY = ImageIterator.getIterator(Y, image, RASTER_SIZE);
+        ImageIterator imageIteratorY = ImageIterator.getIterator(Y, image, rastersize);
 
         while (imageIteratorY.hasNext())
         {
@@ -60,7 +64,7 @@ public class ImageUtil
 
             if(greater(raster.getColor(), colorToFind))
             {
-                if(++counterY >= MAX_GAP)
+                if(++counterY >= MAX_GAP / rastersize)
                 {
                     END_Y = raster.getY();
                     break;
@@ -68,7 +72,7 @@ public class ImageUtil
             }
         }
 
-        ImageIterator imageIteratorX = ImageIterator.getIterator(X, image, RASTER_SIZE);
+        ImageIterator imageIteratorX = ImageIterator.getIterator(X, image, rastersize);
 
         while (imageIteratorX.hasNext())
         {
