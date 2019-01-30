@@ -104,7 +104,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
         @Override
         public boolean hasNext()
         {
-            return (super.x + super.rasterSize) < super.image.getWidth();
+            return super.y < super.image.getHeight();
         }
         
         public boolean hasPrev()
@@ -128,29 +128,31 @@ public abstract class ImageIterator implements Iterator<Raster> {
             if(!hasNext())
                 return null;
 
-            List<Color[]> colorList = new ArrayList<>(super.rasterSize);
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
 
-            for(int y = 0; y < super.rasterSize; y++)
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
             {
-                Color[] colors = new Color[super.rasterSize];
-                for(int x = 0; x < super.rasterSize; x++)
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
                 {
-                    int xCord = Math.min(super.x + x, super.image.getWidth()-1);
-                    int yCord = Math.min(super.y + y, super.image.getWidth()-1);
-                    
-                    // ^^^ Redundant wegen hasNext() ^^^
-                   
+                    int xCord = Math.min(super.x + x, super.image.getWidth() - 1);
+                    int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
                     colors[x] = new Color(super.image.getRGB(xCord, yCord));
                 }
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x, super.y, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x, super.y, colorList);
 
-            super.x += super.rasterSize;
-            if(super.x > super.image.getWidth()) {
+            super.x += currRasterSizeX;
+            if(super.x == super.image.getWidth()) {
                 super.x = 0;
-                super.y += super.rasterSize;
+                super.y += currRasterSizeY;
             }
 
             return raster;
@@ -171,12 +173,12 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int xCord = Math.min(super.x + x, super.image.getWidth()-1);
                     int yCord = Math.min(super.y + y, super.image.getHeight()-1); 
                     
-                    colors[x] = new Color(super.image.getRGB(super.x + x, super.y + y));
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
                 }
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x + super.rasterSize, super.y + super.rasterSize, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x + super.rasterSize, super.y + super.rasterSize, colorList);
             
             return raster;
         }
@@ -200,7 +202,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList);
             
             return raster;
         }
@@ -224,7 +226,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList);
             
             return raster;
         }
@@ -248,7 +250,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x - super.rasterSize, super.y - super.rasterSize, colorList);
             
             return raster;
         }
@@ -263,7 +265,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
 
         @Override
         public boolean hasNext() {
-            return (super.x + super.rasterSize) < super.image.getWidth();
+            return super.x < super.image.getWidth();
         }
 
         @Override
@@ -272,26 +274,30 @@ public abstract class ImageIterator implements Iterator<Raster> {
             if(!hasNext())
                 return null;
 
-            List<Color[]> colorList = new ArrayList<>(super.rasterSize);
 
-            for(int x = 0; x < super.rasterSize; x++)
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int x = 0; x < currRasterSizeY; x++)
             {
-                Color[] colors = new Color[super.rasterSize];
-                for(int y = 0; y < super.rasterSize; y++)
+                Color[] colors = new Color[currRasterSizeX];
+                for(int y = 0; y < currRasterSizeX; y++)
                 {
                     int xCord = Math.min(super.x + x, super.image.getWidth()-1);
                     int yCord = Math.min(super.y + y, super.image.getHeight()-1);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[y] = new Color(super.image.getRGB(xCord, yCord));
                 }
                 colorList.add(colors);
             }
 
-            Raster raster = new Raster(super.x, super.y, colorList, super.rasterSize);
+            Raster raster = new Raster(super.x, super.y, colorList);
 
-            super.y += super.rasterSize;
-            if(super.y > super.image.getHeight()) {
+            super.y += currRasterSizeY;
+            if(super.y == super.image.getHeight()) {
                 super.y = 0;
-                super.x += super.rasterSize;
+                super.x += currRasterSizeX;
             }
 
             return raster;

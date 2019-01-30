@@ -2,6 +2,7 @@ package Roboter.Gui;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Objects;
 
 public class Raster
 {
@@ -9,14 +10,16 @@ public class Raster
     private int y;
 
     private final List<Color[]> colors;
-    private final int rasterSize;
+    private final int rasterSizeX;
+    private final int rasterSizeY;
 
-    public Raster(int x, int y, List<Color[]> colors, int rasterSize)
+    public Raster(int x, int y, List<Color[]> colors)
     {
         this.x = x;
         this.y = y;
         this.colors = colors;
-        this.rasterSize = rasterSize;
+        this.rasterSizeY = colors.size();
+        this.rasterSizeX = colors.get(0).length;
     }
 
     public int getX() {
@@ -27,8 +30,18 @@ public class Raster
         return y;
     }
 
+    public int getRasterSizeX()
+    {
+        return rasterSizeX;
+    }
+
+    public int getRasterSizeY()
+    {
+        return rasterSizeY;
+    }
+
     public Coordinates getMiddle() {
-        return new Coordinates(x/2, y/2);
+        return new Coordinates(x + (rasterSizeX / 2), y + (rasterSizeY / 2));
     }
 
 
@@ -48,10 +61,40 @@ public class Raster
             }
         }
 
-        red   = red   / (rasterSize * rasterSize);
-        green = green / (rasterSize * rasterSize);
-        blue  = blue  / (rasterSize * rasterSize);
+        red   = red   / (rasterSizeX * rasterSizeY);
+        green = green / (rasterSizeX * rasterSizeY);
+        blue  = blue  / (rasterSizeX * rasterSizeY);
 
         return new Color(red, green, blue);
+    }
+
+    @Override
+    public String toString() {
+        return "Raster{" +
+                "x=" + x +
+                ", y=" + y +
+                ", rasterSizeX=" + rasterSizeX +
+                ", rasterSizeY=" + rasterSizeY +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Raster raster = (Raster) o;
+        return x == raster.x &&
+                y == raster.y &&
+                rasterSizeX == raster.rasterSizeX &&
+                rasterSizeY == raster.rasterSizeY &&
+                Objects.equals(colors, raster.colors);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, colors, rasterSizeX, rasterSizeY);
     }
 }

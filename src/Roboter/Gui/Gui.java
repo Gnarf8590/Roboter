@@ -22,7 +22,7 @@ public class Gui implements Runnable
     {
         try
         {
-            original = ImageIO.read(new File("image_Papier"));
+            original = ImageIO.read(new File("image_Papier.jpg"));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -33,18 +33,18 @@ public class Gui implements Runnable
     {
         cut = ImageUtil.cutToSize(original);
 
-
-        if(Main.DEBUG)
-            writeImage(cut, new File("original_cut.png"));
-
-        labyrinth = new Labyrinth(cut);
-        List<Coordinates> path = labyrinth.run();
-        path = mapCoordinates(path);
+        //labyrinth = new Labyrinth(cut);
+        //List<Coordinates> path = labyrinth.run();
+        //path = mapCoordinates(path);
 
 
 
+        writeImage(cut, new File("original_cut.png"));
         writeImage(ImageUtil.reColor(cut, false), new File("cut.png"));
-        writeImage(ImageUtil.reColor(cut, true), new File("black_white_cut.png"));
+
+        BufferedImage blackWhite = ImageUtil.reColor(cut, true);
+        writeImage(blackWhite, new File("black_white_cut.png"));
+        writeImage(ImageUtil.reColor(blackWhite, true,10), new File("black_white_cut_new.png"));
 
         Frame frame = new Frame(cut);
     }
