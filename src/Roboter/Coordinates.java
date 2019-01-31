@@ -13,6 +13,14 @@ public class Coordinates
         this.y = y;
     }
 
+    public double distance(Coordinates other)
+    {
+        int X = (int)Math.pow(Math.abs(x-other.x),2);
+        int Y = (int)Math.pow(Math.abs(y-other.y),2);
+
+        return Math.sqrt(X+Y);
+    }
+
     @Override
     public String toString() {
         return "Coordinates{" +

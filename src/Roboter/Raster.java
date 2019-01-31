@@ -1,6 +1,4 @@
-package Roboter.Gui;
-
-import Roboter.Coordinates;
+package Roboter;
 
 import java.awt.Color;
 import java.util.List;
