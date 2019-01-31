@@ -1,7 +1,5 @@
 package Roboter;
 
-import Roboter.Gui.Raster;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

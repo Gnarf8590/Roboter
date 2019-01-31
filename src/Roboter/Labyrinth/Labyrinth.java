@@ -3,7 +3,7 @@ package Roboter.Labyrinth;
 import Roboter.Coordinates;
 import Roboter.ImageIterator;
 import Roboter.ImageUtil;
-import Roboter.Gui.Raster;
+import Roboter.Raster;
 
 import java.awt.image.BufferedImage;
 
