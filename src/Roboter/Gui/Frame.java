@@ -64,7 +64,7 @@ public class Frame extends JFrame
         setLayout(layout);
         pack();
         setResizable(false);
-        setSize(600, 600);
+        setSize(new Dimension(800, 600));
         add(imagePanel, BorderLayout.CENTER);
         add(all, BorderLayout.PAGE_END);
 
@@ -111,9 +111,7 @@ public class Frame extends JFrame
         int mapX = original.getWidth() - image.getWidth();
         int mapY = original.getHeight() - image.getHeight();
 
-        List<Coordinates> mappedCord = old.stream().map(e -> new Coordinates(e.x+mapX, e.y +mapY)).collect(Collectors.toList());
-
-        return mappedCord;
+        return old.stream().map(e -> new Coordinates(e.x+mapX, e.y +mapY)).collect(Collectors.toList());
     }
 
     private List<Coordinates> removeShort(List<Coordinates> old)
@@ -148,7 +146,8 @@ public class Frame extends JFrame
             @Override
             public void mouseReleased(MouseEvent e) {
                 isUserPainting = false;
-                paintSolution(removeShort(userSolution));
+                userSolution = removeShort(userSolution);
+                paintSolution(userSolution);
             }
         });
 
@@ -190,6 +189,13 @@ public class Frame extends JFrame
         reset.addActionListener(e -> {
             userSolution.clear();
             setMazeImage(image);
+        });
+
+        solution.addActionListener(e -> {
+            reset.setEnabled(false);
+            List<Coordinates> cords = completeControl.solve(image);
+            paintSolution(cords);
+            completeControl.setSolution(cords);
         });
 
         stop.addActionListener(e ->
