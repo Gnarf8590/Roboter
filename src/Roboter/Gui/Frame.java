@@ -68,6 +68,8 @@ public class Frame extends JFrame
         add(imagePanel, BorderLayout.CENTER);
         add(all, BorderLayout.PAGE_END);
 
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(dimension.width/2-(getWidth()/2), dimension.height/2-(getHeight()/2));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         initListener();
@@ -85,11 +87,11 @@ public class Frame extends JFrame
         g2d.setColor(Color.RED);
         BasicStroke bs = new BasicStroke(6);
         g2d.setStroke(bs);
-
+        int radius = 5;
         for (Coordinates coordinates : solution)
         {
             g2d.drawLine(last.x, last.y, coordinates.x, coordinates.y);
-            g2d.drawOval(coordinates.x,coordinates.y,5,5);
+            g2d.drawOval(coordinates.x -(radius/2) ,coordinates.y - (radius/2), radius, radius);
             last = coordinates;
         }
         setMazeImage(solutionImage);
