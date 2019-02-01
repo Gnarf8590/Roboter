@@ -17,6 +17,7 @@ public class CompleteControl implements Control, LabyrinthControl
         this.control = control;
         this.labyrinthControl = labyrinthControl;
     }
+
     @Override
     public BufferedImage getImage()
     {

@@ -118,6 +118,9 @@ public class Frame extends JFrame
 
     private List<Coordinates> removeShort(List<Coordinates> old)
     {
+        if(old.size() == 0)
+            return  old;
+
         List<Coordinates> newCord = new ArrayList<>();
         newCord.add(old.get(0));
         Coordinates last = old.get(0);
