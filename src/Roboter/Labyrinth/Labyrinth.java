@@ -2,6 +2,7 @@ package Roboter.Labyrinth;
 
 import Roboter.Coordinates;
 import Roboter.ImageIterator;
+import Roboter.ImageIterator.Type;
 import Roboter.ImageUtil;
 import Roboter.Raster;
 
@@ -11,31 +12,38 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Labyrinth {
+public class Labyrinth implements LabyrinthControl{
 
 	public BufferedImage img;
 	int rastersize = 5;
-	ImageIterator i_iterator = ImageIterator.getIterator(img, rastersize);
 	Color white = new Color(200,200,200);
 	Color black = new Color(50,50,50);
 	private Coordinates start;
 	private Coordinates end;
+	
+	ImageIterator i_iterator = ImageIterator.getIterator(Type.Lab, img, rastersize);
+	
+	
+	
+	public Labyrinth() {
+
+	}
+
+	
+	@Override
+	public List<Coordinates> solve(BufferedImage image) {
 		
-	public Labyrinth(BufferedImage bufImg) {
-		this.img = bufImg;
+		this.img = image;
 		start = findStart();
 		end = findEnd();
-		
+
 		
 		System.out.println(start.toString());
 		System.out.println(end.toString());
+		
+		return new ArrayList<Coordinates>();
 	}
-
-	public List<Coordinates> run()
-	{
-		return new ArrayList<>();
-	}
-
+	
 
 	public boolean isLeftPath()
 	{
@@ -79,10 +87,12 @@ public class Labyrinth {
 	
 
 	public Coordinates findStart() {
-		Coordinates start = null;
+		ImageIterator start_iterator = ImageIterator.getIterator(Type.Lab, img, rastersize);
 		
-		while(i_iterator.hasNext() && start == null) {
-			Raster t_raster = i_iterator.next();
+		 start = null;
+
+		while(start_iterator.hasNext() && start == null) {
+			Raster t_raster = start_iterator.next();
 			if(	t_raster.getX() == 0 && ImageUtil.greater(t_raster.getColor(), white)
 					|| t_raster.getY() == 0 && ImageUtil.greater(t_raster.getColor(), white))
 			{
@@ -94,20 +104,25 @@ public class Labyrinth {
 	}
 	
 	public Coordinates findEnd() {
-		Coordinates start = null;
+		ImageIterator end_iterator = ImageIterator.getIterator(Type.Lab, img, rastersize);
+
+		end = null;
 		
-		while(i_iterator.hasNext() && start == null) {
-			Raster t_raster = i_iterator.next();
+		while(end_iterator.hasNext() && end == null && !end.equals(start)) {
+			Raster t_raster = end_iterator.next();
 			if(t_raster.getX() > (img.getWidth()-5) && ImageUtil.greater(t_raster.getColor(), white) 
 					|| t_raster.getY() == (img.getHeight()-5) && ImageUtil.greater(t_raster.getColor(), white)) {
 
 				//Mit t_raster.getMiddle() würdest du den Mittelpunkt bekommen falls du willst
 				//So bekommst den Anfangswert links oben
-				start = new Coordinates(t_raster.getX(), t_raster.getY());
+			
+				end = new Coordinates(t_raster.getX(), t_raster.getY());
 			}
 		}
 		
 		return start;
 	}
+
+
 
 }

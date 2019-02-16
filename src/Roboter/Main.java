@@ -4,6 +4,7 @@ import Roboter.Ansteuerung.Control;
 import Roboter.DEBUG_KLASSEN.Dummy_Control;
 import Roboter.DEBUG_KLASSEN.Dummy_Labyrinth;
 import Roboter.Gui.Gui;
+import Roboter.Labyrinth.Labyrinth;
 import Roboter.Labyrinth.LabyrinthControl;
 
 import java.util.concurrent.ExecutorService;
@@ -16,7 +17,7 @@ public class Main
     public static void main(String[] args)
     {
         Control control = new Dummy_Control();
-        LabyrinthControl labyrinthControl = new Dummy_Labyrinth();
+        LabyrinthControl labyrinthControl = new Labyrinth();
 
         Gui gui = new Gui(control, labyrinthControl);
     }

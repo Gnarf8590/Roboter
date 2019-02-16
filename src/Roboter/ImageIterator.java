@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import Roboter.Labyrinth.LabyrinthRaster;
+
 public abstract class ImageIterator implements Iterator<Raster> {
 
     private final BufferedImage image;
@@ -14,7 +16,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
     private int x;
     private int y;
 
-    public enum Type{X,Y};
+    public enum Type{X,Y,Lab};
     public static ImageIterator getIterator(BufferedImage image, int rasterSize)
     {
         return new XIterator(image,rasterSize);
@@ -28,6 +30,8 @@ public abstract class ImageIterator implements Iterator<Raster> {
                 return new XIterator(image,rasterSize);
             case Y:
                 return new YIterator(image,rasterSize);
+            case Lab: 
+            	return new LabyrinthIterator(image,rasterSize);
                 default:
                     throw new IllegalStateException("Wrong Type");
         }
@@ -90,10 +94,10 @@ public abstract class ImageIterator implements Iterator<Raster> {
     }
 
     @Override
-    public void forEachRemaining(Consumer action) {
+    public void forEachRemaining(@SuppressWarnings("rawtypes") Consumer action) {
         //does nothing
-    }
-
+    }    
+    
     private static class XIterator extends ImageIterator
     {
         private XIterator(BufferedImage image, int rasterSize)
@@ -302,5 +306,192 @@ public abstract class ImageIterator implements Iterator<Raster> {
 
             return raster;
         }
+    }
+    
+    private static class LabyrinthIterator extends ImageIterator
+    {
+        private LabyrinthIterator(BufferedImage image, int rasterSize)
+        {
+            super(image, rasterSize);
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return super.y < super.image.getHeight();
+        }
+        
+        public boolean hasPrev()
+        {
+            return (super.x - super.rasterSize) > 0;
+        }
+        
+        public boolean hasAbove()
+        {
+            return (super.y - super.rasterSize) > 0;
+        }
+        
+        public boolean hasBeneath()
+        {
+            return (super.y + super.rasterSize) < super.image.getHeight();
+        }
+
+        public Raster getNext() {
+
+            if(!hasNext())
+                return null;
+
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
+            {
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
+                {
+                    int xCord = Math.min(super.x + x, super.image.getWidth() - 1);
+                    int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+           LabyrinthRaster raster = new LabyrinthRaster(super.x, super.y, colorList);
+
+            return raster;
+        }
+        
+        public Raster getPrev() {
+
+            if(!hasNext())
+                return null;
+
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
+            {
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
+                {
+                    int xCord = Math.max(super.x + x, 0);
+                    int yCord = Math.max(super.y - y, super.image.getHeight()-1);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+           LabyrinthRaster raster = new LabyrinthRaster(super.x - super.rasterSize, super.y , colorList);
+
+            return raster;
+        }
+        
+        
+        public Raster getDown() {
+
+            if(!hasNext())
+                return null;
+
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
+            {
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
+                {
+                    int xCord = Math.max(super.x + x, 0);
+                    int yCord = Math.max(super.y - y, super.image.getHeight()-1);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+           LabyrinthRaster raster = new LabyrinthRaster(super.x, super.y + super.rasterSize, colorList);
+
+            return raster;
+        }
+        
+        public Raster getUp() {
+
+            if(!hasNext())
+                return null;
+
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
+            {
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
+                {
+                    int xCord = Math.max(super.x + x, 0);
+                    int yCord = Math.max(super.y - y, 0);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+           LabyrinthRaster raster = new LabyrinthRaster(super.x, super.y - super.rasterSize, colorList);
+
+            return raster;
+        }
+        
+        @Override
+        public Raster next() {
+
+            if(!hasNext())
+                return null;
+
+            int currRasterSizeX = Math.min(super.rasterSize, super.image.getWidth() - super.x);
+            int currRasterSizeY = Math.min(super.rasterSize, super.image.getHeight() - super.y);
+
+            List<Color[]> colorList = new ArrayList<>(currRasterSizeY);
+
+            for(int y = 0; y < currRasterSizeY; y++)
+            {
+                Color[] colors = new Color[currRasterSizeX];
+                for(int x = 0; x < colors.length; x++)
+                {
+                    int xCord = Math.min(super.x + x, super.image.getWidth() - 1);
+                    int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
+
+                    //System.out.println("X:"+xCord+" Y:"+yCord);
+                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                }
+                colorList.add(colors);
+            }
+
+           LabyrinthRaster raster = new LabyrinthRaster(super.x, super.y, colorList);
+           raster.setRight(getNext());
+           raster.setLeft(getPrev());
+           raster.setDown(raster.getDown());
+           raster.setUp(getUp());
+           
+            super.x += currRasterSizeX;
+            if(super.x == super.image.getWidth()) {
+                super.x = 0;
+                super.y += currRasterSizeY;
+            }
+
+            return raster;
+        }
+    
     }
 }
