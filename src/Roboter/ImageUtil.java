@@ -26,7 +26,7 @@ public class ImageUtil
     }
     public static BufferedImage cutToSize(BufferedImage image, int rastersize)
     {
-        Coordinates start = getStart(image, BLACK_START, rastersize);
+        Coordinates start = getStart(image, rastersize);
         if(start == null)
             throw new IllegalStateException("Image no black!!!!!!!!!!");
         BufferedImage cut = image.getSubimage(start.x, start.y, image.getWidth() - start.x, image.getHeight() - start.y);
@@ -46,13 +46,13 @@ public class ImageUtil
         //return image.getSubimage(start.x, start.y, end.x-start.x, end.y-start.y);
     }
 
-    private static Coordinates getStart(BufferedImage image, Color colorToFind, int rastersize)
+    public static Coordinates getStart(BufferedImage image, int rastersize)
     {
         ImageIterator iter = ImageIterator.getIterator(image,rastersize);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
-            if(smaller(raster.getColor(), colorToFind))
+            if(smaller(raster.getColor(), BLACK_START))
             {
                 return raster.getMiddle();
             }

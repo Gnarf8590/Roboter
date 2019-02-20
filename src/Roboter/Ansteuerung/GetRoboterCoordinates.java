@@ -50,7 +50,9 @@ public class GetRoboterCoordinates implements Control
 			double target_y = startwert_y + (akt_koordinate.y * 0.36);
 			
 			Position bsp_Position = new Position(target_x, target_y, 350, 180, 0, 50);
-			
+			System.out.println(akt_koordinate);
+			System.out.println(bsp_Position);
+			System.out.println();
 			if(target_x < -220 || target_x > 244)
 				throw new IllegalArgumentException();
 			if(target_y < -590 || target_y > -329)

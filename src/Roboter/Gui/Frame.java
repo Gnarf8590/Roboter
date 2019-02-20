@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Frame extends JFrame
@@ -19,6 +20,7 @@ public class Frame extends JFrame
 
     private BufferedImage original;
     private BufferedImage image;
+    private Coordinates startCoord;
 
     private List<Coordinates> userSolution;
     private boolean isUserPainting;
@@ -108,8 +110,8 @@ public class Frame extends JFrame
         if(old.size() == 0)
             return old;
 
-        int mapX = original.getWidth() - image.getWidth();
-        int mapY = original.getHeight() - image.getHeight();
+        int mapX = startCoord.x;
+        int mapY = startCoord.y;
 
         return old.stream().map(e -> new Coordinates(e.x+mapX, e.y +mapY)).collect(Collectors.toList());
     }
@@ -169,6 +171,7 @@ public class Frame extends JFrame
                     original = completeControl.getImage();
                     image = ImageUtil.reColor(original, true, 1);
                     image = ImageUtil.cutToSize(image, 1);
+                    startCoord = ImageUtil.getStart(original,1);
                     setMazeImage(image);
                     start.setEnabled(true);
                 });
@@ -184,7 +187,7 @@ public class Frame extends JFrame
                                         solution = completeControl.solve(image);
 
                                     paintSolution(solution);
-                                    completeControl.setSolution(mapCoordinates(solution));
+                                    CompletableFuture.runAsync(()->completeControl.setSolution(mapCoordinates(solution)));
                                 });
         reset.addActionListener(e -> {
             userSolution.clear();

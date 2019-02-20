@@ -50,13 +50,10 @@ public class Position implements Cloneable
     @Override
     public String toString()
     {
-        return "Roboter.Ansteuerung.Position{" +
+        return "Position{" +
                 "x=" + x +
                 ", y=" + y +
                 ", z=" + z +
-                ", a=" + a +
-                ", b=" + b +
-                ", c=" + c +
                 '}';
     }
 }
