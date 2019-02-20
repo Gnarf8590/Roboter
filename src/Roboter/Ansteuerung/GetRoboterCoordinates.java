@@ -23,12 +23,13 @@ public class GetRoboterCoordinates implements Control
 		try
 		{
 			rcontrol.moveForCamera();
+			Thread.sleep(1_000);//sicher gehen dass Arm aus dem Bild ist
 			return fgrabber.readImage();
-		} catch (IOException e)
+		} catch (IOException | InterruptedException e)
 		{
 			return null;
 		}
-	}
+    }
 
 	@Override
 	public void moveTo(Coordinates coordinates) {

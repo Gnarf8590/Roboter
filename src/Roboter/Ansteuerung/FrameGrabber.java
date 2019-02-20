@@ -14,6 +14,7 @@ public class FrameGrabber
     static
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        System.loadLibrary("opencv_ffmpeg343_64");
     }
 
     private VideoCapture camera;
@@ -23,7 +24,22 @@ public class FrameGrabber
          camera = new VideoCapture("rtsp://127.0.0.1:8554/mystream");
     }
 
-    private BufferedImage convertToImage(Mat src)
+    public BufferedImage readImage()
+    {
+        if(camera.isOpened())
+        {
+            Mat srcFrame = new Mat();
+
+            camera.read(srcFrame);
+            BufferedImage image = convertToImage(srcFrame);
+            srcFrame.release();
+            return image;
+        }else
+            System.err.println("Kamera konnte nicht geöffnet werden");
+        return null;
+    }
+
+    private static BufferedImage convertToImage(Mat src)
     {
         Mat destFrame = new Mat();
         Imgproc.cvtColor(src, destFrame, Imgproc.COLOR_RGB2GRAY, 0);
@@ -35,18 +51,5 @@ public class FrameGrabber
         byte[] data = ((DataBufferByte) gray.getRaster().getDataBuffer()).getData();
         destFrame.get(0, 0, data);
         return gray;
-    }
-
-    public BufferedImage readImage()
-    {
-        if(camera.isOpened())
-        {
-            Mat srcFrame = new Mat();
-
-            camera.read(srcFrame);
-           return convertToImage(srcFrame);
-        }else
-            System.err.println("Kamera konnte nicht geöffnet werden");
-        return null;
     }
 }

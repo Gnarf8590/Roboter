@@ -169,9 +169,9 @@ public class Frame extends JFrame
                     grabFrame.setEnabled(false);
                     reset.setEnabled(true);
                     original = completeControl.getImage();
-                    image = ImageUtil.reColor(original, true, 1);
-                    image = ImageUtil.cutToSize(image, 1);
-                    startCoord = ImageUtil.getStart(original,1);
+                    image = ImageUtil.reColor(original, true, 5);
+                    image = ImageUtil.cutToSize(image, 5);
+                    startCoord = ImageUtil.getStart(original,5);
                     setMazeImage(image);
                     start.setEnabled(true);
                 });
