@@ -47,4 +47,9 @@ public class Dummy_Control implements Control
     {
 
     }
+
+    @Override
+    public void close() {
+
+    }
 }

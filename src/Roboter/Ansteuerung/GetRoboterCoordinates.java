@@ -60,7 +60,16 @@ public class GetRoboterCoordinates implements Control
 		}
 		sendPositions(al_ArmKoordinaten);
 	}
-	
+
+	@Override
+	public void close() {
+		try {
+			rcontrol.close();
+		} catch (IOException e) {
+			;
+		}
+	}
+
 	private void sendPositions(List<Position> armcoordinates)
 	{
     	try

@@ -203,5 +203,13 @@ public class Frame extends JFrame
                                    start.setEnabled(true);
                                    stop.setEnabled(false);
                                });
+
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                completeControl.close();
+            }
+        });
     }
 }

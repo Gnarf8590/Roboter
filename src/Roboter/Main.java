@@ -1,6 +1,7 @@
 package Roboter;
 
 import Roboter.Ansteuerung.Control;
+import Roboter.Ansteuerung.GetRoboterCoordinates;
 import Roboter.DEBUG_KLASSEN.Dummy_Control;
 import Roboter.DEBUG_KLASSEN.Dummy_Labyrinth;
 import Roboter.Gui.Gui;
@@ -16,7 +17,7 @@ public class Main
     public static final boolean DEBUG = false;
     public static void main(String[] args)
     {
-        Control control = new Dummy_Control();
+        Control control = new GetRoboterCoordinates();
         LabyrinthControl labyrinthControl = new Labyrinth();
 
         Gui gui = new Gui(control, labyrinthControl);
