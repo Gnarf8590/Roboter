@@ -203,6 +203,7 @@ public class Frame extends JFrame
 
         stop.addActionListener(e ->
                                {
+                                   completeControl.close();
                                    start.setEnabled(true);
                                    stop.setEnabled(false);
                                });

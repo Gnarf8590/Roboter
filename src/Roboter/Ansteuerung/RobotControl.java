@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 public class RobotControl implements AutoCloseable
 {
     private static final Position START = new Position(0, -500, 350, 180, 0, 50);
-    private static final Position KAMERA = new Position(410.28, -35.86, 528.72, 177.67, 1.46, 146.29);
+    private static final Position KAMERA = new Position(410.28, -35.86, 528.72, 180, 0, 50);
     private static final int WAIT_TIME = 500;
 
     private Socket socket;

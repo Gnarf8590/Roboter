@@ -49,7 +49,7 @@ public class GetRoboterCoordinates implements Control
 			double target_x = startwert_x - (akt_koordinate.x * 0.36);
 			double target_y = startwert_y + (akt_koordinate.y * 0.36);
 			
-			Position bsp_Position = new Position(target_x, target_y, 350, 180, 0, 50);
+			Position bsp_Position = new Position(target_x, target_y, 400, 180, 0, 50);
 			System.out.println(akt_koordinate);
 			System.out.println(bsp_Position);
 			System.out.println();
