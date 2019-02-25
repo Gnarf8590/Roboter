@@ -2,22 +2,25 @@ package Roboter;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Roboter.ImageIterator.Type.X;
 import static Roboter.ImageIterator.Type.Y;
+import static java.awt.Color.BLACK;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 
 public class ImageUtil
 {
-    private static final Color BLACK_START = new Color(180,180,180);
     private static final int RASTER_SIZE = 5;
-    private static final int RASTER_RECOLOR = 5;
     private static final int MAX_GAP = 40;
 
     public static BufferedImage cutToSize(BufferedImage image)
@@ -31,14 +34,15 @@ public class ImageUtil
             throw new IllegalStateException("Image no black!!!!!!!!!!");
         BufferedImage cut = image.getSubimage(start.x, start.y, image.getWidth() - start.x, image.getHeight() - start.y);
 
-        Coordinates end = getEnd(cut, BLACK_START, rastersize);
+        writeImage(cut, new File("cut.png"));
+        Coordinates end = getEnd(cut, rastersize);
 
         end = new Coordinates(start.x + end.x, start.y + end.y);
 
         System.out.println(start);
         System.out.println(end);
 
-        BufferedImage img = image.getSubimage(start.x, start.y,end.x-start.x, end.y-start.y); //fill in the corners of the desired crop location here
+        BufferedImage img = image.getSubimage(start.x, start.y, end.x-start.x, end.y-start.y); //fill in the corners of the desired crop location here
         BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = copyOfImage.createGraphics();
         g.drawImage(img, 0, 0, null);
@@ -48,11 +52,11 @@ public class ImageUtil
 
     public static Coordinates getStart(BufferedImage image, int rastersize)
     {
-        ImageIterator iter = ImageIterator.getIterator(image,rastersize);
+        ImageIterator iter = ImageIterator.getIterator(image, rastersize);
         while (iter.hasNext())
         {
             Raster raster = iter.next();
-            if(smaller(raster.getColor(), BLACK_START))
+            if(smaller(raster.getColor(), BLACK))
             {
                 return raster.getMiddle();
             }
@@ -61,19 +65,20 @@ public class ImageUtil
         return null;
     }
 
-    private static Coordinates getEnd(BufferedImage image, Color colorToFind, int rastersize)
+    private static Coordinates getEnd(BufferedImage image, int rastersize)
     {
         int counterY = 0;
         int END_Y = -1;
         int END_X = -1;
 
+        //Find left Bottom Corner
         ImageIterator imageIteratorY = ImageIterator.getIterator(Y, image, rastersize);
 
         while (imageIteratorY.hasNext())
         {
             Raster raster = imageIteratorY.next();
 
-            if(greater(raster.getColor(), colorToFind))
+            if(greater(raster.getColor(), BLACK))
             {
                 if(++counterY >= MAX_GAP / rastersize)
                 {
@@ -83,13 +88,14 @@ public class ImageUtil
             }
         }
 
-        ImageIterator imageIteratorX = ImageIterator.getIterator(X, image, rastersize);
+        //Find Right Bottom Corner
+        ImageIterator imageIteratorX = ImageIterator.getIterator(X, image, rastersize, END_Y-rastersize*2);
 
         while (imageIteratorX.hasNext())
         {
             Raster raster = imageIteratorX.next();
 
-            if(greater(raster.getColor(), colorToFind))
+            if(greater(raster.getColor(), BLACK))
             {
                 END_X = raster.getX();
                 break;
@@ -97,6 +103,44 @@ public class ImageUtil
         }
 
         return new Coordinates(END_X, END_Y);
+    }
+
+    public static BufferedImage rotate(BufferedImage image)
+    {
+        double radian = 0;
+
+        ImageIterator imageIterator = ImageIterator.getIterator(image,1);
+
+        List<Integer> distance = new ArrayList<>();
+        int counter = 0;
+        while (imageIterator.hasNext())
+        {
+            Raster raster = imageIterator.next();
+
+            if(BLACK.equals(raster.getColor()))
+            {
+                distance.add(counter);
+                counter = 0;
+                while (imageIterator.hasNext() && imageIterator.next().getX() != 0)
+                {
+                    ;
+                }
+            }
+            counter++;
+
+        }
+
+
+        return rotate(image,radian);
+    }
+
+    private static BufferedImage rotate(BufferedImage image, double radian)
+    {
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(radian, image.getWidth()/2, image.getHeight()/2);
+        AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+        image = op.filter(image, null);
+        return image;
     }
 
     //ONLY FOR GREY COLORS
@@ -111,15 +155,15 @@ public class ImageUtil
         return RGB.getBlue() >= toMatch.getBlue() && RGB.getGreen() >= toMatch.getGreen() && RGB.getRed() >= toMatch.getRed();
     }
 
-    public static BufferedImage reColor(BufferedImage image, boolean set)
+    public static BufferedImage reColor(BufferedImage image)
     {
-        return reColor(image,set,RASTER_SIZE);
+        return reColor(image,RASTER_SIZE);
     }
 
-    public static BufferedImage reColor(BufferedImage image, boolean set, int rasterSize)
+    public static BufferedImage reColor(BufferedImage image, int rasterSize)
     {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), TYPE_INT_RGB);
-        Color black = new Color(200,200,200);
+        Color black = new Color(175,175,175);
 
         ImageIterator iter = ImageIterator.getIterator(image, rasterSize);
         while (iter.hasNext())
@@ -127,13 +171,12 @@ public class ImageUtil
             Raster raster = iter.next();
 
             Color color = raster.getColor();
-            if(set)
-            {
-                if(smaller(raster.getColor(), black))
-                    color = Color.BLACK;
-                else
-                    color = Color.WHITE;
-            }
+
+            if(smaller(color, black))
+                color = BLACK;
+            else
+                color = Color.WHITE;
+
             for(int i = 0; i < raster.getRasterSizeY(); i++)
             {
                 for(int j = 0; j < raster.getRasterSizeX(); j++)
@@ -144,6 +187,7 @@ public class ImageUtil
             }
         }
 
+        writeImage(newImage, new File("BLACK_WHITE.png"));
         return newImage;
     }
 
