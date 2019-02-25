@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +45,7 @@ public class Frame extends JFrame
         imagePanel = new JPanel();
         imagePanel.add(picLabel);
         all = new JPanel();
-        solution = new JButton("Lösung anzeigen");
+        solution = new JButton("Finde Lösung");
         start = new JButton("Starte Roboter");
         stop = new JButton("Stoppe Roboter");
         reset = new JButton("Zurücksetzen");
@@ -86,18 +87,30 @@ public class Frame extends JFrame
         Coordinates last = solution.get(0);
 
         Graphics2D g2d = solutionImage.createGraphics();
+        Graphics2D g2dString = solutionImage.createGraphics();
         g2d.setColor(Color.RED);
+        g2dString.setColor(Color.BLACK);
         BasicStroke bs = new BasicStroke(6);
         g2d.setStroke(bs);
         int radius = 5;
+
         for (Coordinates coordinates : solution)
         {
             g2d.drawLine(last.x, last.y, coordinates.x, coordinates.y);
             g2d.drawOval(coordinates.x -(radius/2) ,coordinates.y - (radius/2), radius, radius);
             last = coordinates;
         }
-        setMazeImage(solutionImage);
 
+
+        int count = 1;
+        for (Coordinates coordinates : solution)
+        {
+            g2dString.drawString(String.valueOf(count++),coordinates.x, coordinates.y);
+        }
+
+
+        setMazeImage(solutionImage);
+        ImageUtil.writeImage(solutionImage,new File("solution.png"));
     }
 
     private void setMazeImage(BufferedImage image)
@@ -166,10 +179,9 @@ public class Frame extends JFrame
                                     });
                 grabFrame.addActionListener((e) ->
                 {
-                    grabFrame.setEnabled(false);
-                    reset.setEnabled(true);
                     original = completeControl.getImage();
-                    image = ImageUtil.reColor(original, true, 5);
+                    image = ImageUtil.reColor(original, 1);
+//                    image = ImageUtil.rotate(original);
                     image = ImageUtil.cutToSize(image, 5);
                     startCoord = ImageUtil.getStart(original,5);
                     setMazeImage(image);

@@ -24,32 +24,12 @@ public class CompleteControl implements Control, LabyrinthControl
         this.labyrinthControl = labyrinthControl;
     }
 
-    private Path IMAGE_PATH = Paths.get("image_Papier.jpg");
     @Override
     public BufferedImage getImage()
     {
-        BufferedImage image = control.getImage();
+        return control.getImage();
+    }
 
-        if(image == null)
-        {
-            try
-            {
-                image = loadImage(IMAGE_PATH);
-            } catch (IOException e)
-            {
-                return null;
-            }
-        }
-        return image;
-    }
-    //DEBUG METHODS
-    private BufferedImage loadImage(Path imageFile) throws IOException
-    {
-        try(InputStream in = Files.newInputStream(imageFile))
-        {
-            return ImageIO.read(in);
-        }
-    }
 
     @Override
     public void moveTo(Coordinates coordinates)
