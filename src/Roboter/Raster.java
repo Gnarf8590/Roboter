@@ -1,6 +1,6 @@
 package Roboter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,11 +70,14 @@ public class Raster
 
     @Override
     public String toString() {
+
+        Color color = getColor();
         return "Raster{" +
                 "x=" + x +
                 ", y=" + y +
                 ", rasterSizeX=" + rasterSizeX +
                 ", rasterSizeY=" + rasterSizeY +
+                ", Color=r=" + color.getRed() + ", g=" +color.getGreen()+", b=" +color.getBlue()+
                 '}';
     }
 
