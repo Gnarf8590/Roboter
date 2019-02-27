@@ -33,13 +33,13 @@ public class Transformer
         int countX = image.getWidth()/rasterSize    + (image.getWidth()  % rasterSize == 0 ? 0 : 1);
         int countY = image.getHeight()/rasterSize   + (image.getHeight() % rasterSize == 0 ? 0 : 1);
 
-        Node[][] nodes = new TransformableNode[countY][countX];
+        Node[][] nodes = new Node[countY][countX];
 
         for(int y = 0; y < nodes.length; y++)
         {
             for(int x = 0; x < nodes[y].length; x++)
             {
-                nodes[y][x] = new TransformableNode(x*rasterSize,y*rasterSize);
+                nodes[y][x] = new Node(x*rasterSize,y*rasterSize);
             }
         }
 
@@ -86,59 +86,7 @@ public class Transformer
 
     public List<Coordinates> transform(List<Node> nodeList)
     {
-        return nodeList.stream().map(e -> (TransformableNode)e).map(e-> new Coordinates(e.getX(), e.getY())).collect(Collectors.toList());
+        return nodeList.stream().map(e-> new Coordinates(e.getX(), e.getY())).collect(Collectors.toList());
     }
 
-    private static class TransformableNode extends Node
-    {
-        private final int x;
-        private final int y;
-        private TransformableNode(int x, int y)
-        {
-            super();
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX()
-        {
-            return x;
-        }
-
-        public int getY()
-        {
-            return y;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            if (!super.equals(o))
-                return false;
-
-            TransformableNode that = (TransformableNode) o;
-            return x == that.x &&
-                    y == that.y;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return Objects.hash(super.hashCode(), x, y);
-        }
-
-        @Override
-        public String toString()
-        {
-            return "TransformableNode{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    ", "+super.toString()+
-                    '}';
-        }
-    }
 }

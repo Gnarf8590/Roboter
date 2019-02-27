@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 public class Node
 {
+    private int x;
+    private int y;
     private Node up;
     private Node down;
     private Node left;
@@ -13,9 +15,10 @@ public class Node
     private boolean isPath;
     private boolean visited;
 
-    public Node()
+    public Node(int x, int y)
     {
-
+        this.x = x;
+        this.y = y;
         up = null;
         down = null;
         left = null;
@@ -23,6 +26,16 @@ public class Node
         isPath = false;
         visited = false;
     }
+
+    public int getX() {
+        return x;
+    }
+
+
+    public int getY() {
+        return y;
+    }
+
 
     public void visited()
     {
