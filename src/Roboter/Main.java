@@ -1,16 +1,10 @@
 package Roboter;
 
 import Roboter.Ansteuerung.Control;
-import Roboter.Ansteuerung.GetRoboterCoordinates;
 import Roboter.DEBUG_KLASSEN.Dummy_Control;
-import Roboter.DEBUG_KLASSEN.Dummy_Labyrinth;
 import Roboter.Gui.Gui;
 import Roboter.Labyrinth.Labyrinth;
 import Roboter.Labyrinth.LabyrinthControl;
-
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Main
 {
@@ -18,7 +12,7 @@ public class Main
     public static final boolean DEBUG = false;
     public static void main(String[] args)
     {
-        Control control = new GetRoboterCoordinates();
+        Control control = new Dummy_Control();
         LabyrinthControl labyrinthControl = new Labyrinth();
 
 

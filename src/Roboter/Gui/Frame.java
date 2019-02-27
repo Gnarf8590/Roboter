@@ -1,9 +1,7 @@
 package Roboter.Gui;
 
-import Roboter.Ansteuerung.Control;
 import Roboter.Coordinates;
 import Roboter.ImageUtil;
-import Roboter.Labyrinth.LabyrinthControl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,7 +65,7 @@ public class Frame extends JFrame
         setLayout(layout);
         pack();
         setResizable(false);
-        setSize(new Dimension(800, 600));
+        setSize(new Dimension(800, 650));
         add(imagePanel, BorderLayout.CENTER);
         add(all, BorderLayout.PAGE_END);
 
@@ -178,31 +176,33 @@ public class Frame extends JFrame
                                         }
                                     });
                 grabFrame.addActionListener((e) ->
-                {
-                    original = completeControl.getImage();
-                    ImageUtil.writeImage(original, new File("original.png"));
-                    image = ImageUtil.reColor(original, 1);
-                    image = ImageUtil.rotate(image);
-                    image = ImageUtil.reColor(image, 1);
-                    image = ImageUtil.cutToSize(image, 5);
-                    startCoord = ImageUtil.getStart(original,5);
-                    setMazeImage(image);
-                    start.setEnabled(true);
-                });
+                    CompletableFuture.runAsync(() -> {
+                        original = completeControl.getImage();
 
-        start.addActionListener(e ->
-                                {
-                                    start.setEnabled(false);
-                                    stop.setEnabled(true);
-                                    List<Coordinates> solution;
-                                    if(userSolution.size() > 0)
-                                        solution = userSolution;
-                                    else
-                                        solution = completeControl.solve(image);
+                        image = ImageUtil.reColor(original);
+                        image = ImageUtil.rotate(image);
+                        image = ImageUtil.reColor(image);
 
-                                    paintSolution(solution);
-                                    CompletableFuture.runAsync(()->completeControl.setSolution(mapCoordinates(solution)));
-                                });
+                        image = ImageUtil.cutToSize(image, 2);
+                        startCoord = ImageUtil.getStart(original, 2);
+                        setMazeImage(image);
+                        start.setEnabled(true);
+                    }));
+
+        start.addActionListener(e -> CompletableFuture.runAsync(() ->
+                                                                {
+                                                                    start.setEnabled(false);
+                                                                    stop.setEnabled(true);
+                                                                    List<Coordinates> solution;
+                                                                    if (userSolution.size() > 0)
+                                                                        solution = userSolution;
+                                                                    else
+                                                                        solution = completeControl.solve(image);
+
+                                                                    paintSolution(solution);
+                                                                    completeControl.setSolution(mapCoordinates(solution));
+                                                                }
+                                ));
         reset.addActionListener(e -> {
             userSolution.clear();
             setMazeImage(image);

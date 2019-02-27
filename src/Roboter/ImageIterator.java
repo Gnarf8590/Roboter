@@ -1,14 +1,13 @@
 package Roboter;
 
-import java.awt.Color;
+import Roboter.Labyrinth.LabyrinthRaster;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-
-import Roboter.Labyrinth.LabyrinthRaster;
 
 public abstract class ImageIterator implements Iterator<Raster> {
 
@@ -52,6 +51,13 @@ public abstract class ImageIterator implements Iterator<Raster> {
         x = 0;
         y = 0;
     }
+
+    protected Color getRGB(int x, int y)
+    {
+        Color color = new Color(image.getRGB(x,y));
+        return color;
+    }
+
 
     public int[] getRasterCount()
     {
@@ -128,8 +134,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int xCord = Math.min(super.x + x, super.image.getWidth() - 1);
                     int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
 
-                    //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.raster.getSample(xCord, yCord, 0));
+                    colors[x] = getRGB(xCord,yCord);
                 }
                 colorList.add(colors);
             }
@@ -178,7 +183,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                 {
                     int xCord = Math.min(super.x + x, super.image.getWidth()-1);
                     int yCord = Math.min(super.y + y, super.image.getHeight()-1);
-                    colors[y] = new Color(super.raster.getSample(xCord, yCord, 0));
+                    colors[y] = getRGB(xCord, yCord);
                 }
                 colorList.add(colors);
             }
@@ -242,7 +247,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
 
                     //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[x] = getRGB(xCord, yCord);
                 }
                 colorList.add(colors);
             }
@@ -271,7 +276,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int yCord = Math.max(super.y - y, super.image.getHeight()-1);
 
                     //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[x] = getRGB(xCord,yCord);
                 }
                 colorList.add(colors);
             }
@@ -301,7 +306,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int yCord = Math.max(super.y - y, super.image.getHeight()-1);
 
                     //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[x] = getRGB(xCord,yCord);
                 }
                 colorList.add(colors);
             }
@@ -330,7 +335,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int yCord = Math.max(super.y - y, 0);
 
                     //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[x] = getRGB(xCord,yCord);
                 }
                 colorList.add(colors);
             }
@@ -360,7 +365,7 @@ public abstract class ImageIterator implements Iterator<Raster> {
                     int yCord = Math.min(super.y + y, super.image.getHeight() - 1);
 
                     //System.out.println("X:"+xCord+" Y:"+yCord);
-                    colors[x] = new Color(super.image.getRGB(xCord, yCord));
+                    colors[x] = getRGB(xCord,yCord);
                 }
                 colorList.add(colors);
             }

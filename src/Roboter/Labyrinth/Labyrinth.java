@@ -3,12 +3,10 @@ package Roboter.Labyrinth;
 import Roboter.Coordinates;
 import Roboter.ImageIterator;
 import Roboter.ImageIterator.Type;
-import Roboter.ImageUtil;
 import Roboter.Raster;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class Labyrinth implements LabyrinthControl{
 	{
 		Raster t_raster = i_iterator.getNext();
 		
-		if( ImageUtil.greaterEqual(t_raster.getColor(), Color.WHITE))
+		if(Color.WHITE.equals(t_raster.getColor()))
 			return true;
 		else
 			return false;
@@ -57,7 +55,7 @@ public class Labyrinth implements LabyrinthControl{
 	{
 		Raster t_raster = i_iterator.getPrev();
 		
-		if( ImageUtil.greaterEqual(t_raster.getColor(),Color.WHITE))
+		if( Color.WHITE.equals(t_raster.getColor()))
 			return true;
 		else
 			return false;
@@ -67,7 +65,7 @@ public class Labyrinth implements LabyrinthControl{
 	{
 		Raster t_raster = i_iterator.getPrev();
 		
-		if( ImageUtil.greaterEqual(t_raster.getColor(),Color.WHITE))
+		if( Color.WHITE.equals(t_raster.getColor()))
 			return true;
 		else
 			return false;
@@ -77,7 +75,7 @@ public class Labyrinth implements LabyrinthControl{
 	{
 		Raster t_raster = i_iterator.getPrev();
 		
-		if( ImageUtil.greaterEqual(t_raster.getColor(),Color.WHITE))
+		if( Color.WHITE.equals(t_raster.getColor()))
 			return true;
 		else
 			return false;
@@ -91,8 +89,8 @@ public class Labyrinth implements LabyrinthControl{
 
 		while(start_iterator.hasNext() && start == null) {
 			Raster t_raster = start_iterator.next();
-			if(	t_raster.getX() == 0 && ImageUtil.greaterEqual(t_raster.getColor(), Color.WHITE)
-					|| t_raster.getY() == 0 && ImageUtil.greaterEqual(t_raster.getColor(), Color.WHITE))
+			if(	t_raster.getX() == 0 && Color.WHITE.equals(t_raster.getColor())
+					|| t_raster.getY() == 0 && Color.WHITE.equals(t_raster.getColor()))
 			{
 				start = new Coordinates(t_raster.getX(),t_raster.getY());			
 			}
@@ -106,10 +104,10 @@ public class Labyrinth implements LabyrinthControl{
 
 		end = null;
 		
-		while(end_iterator.hasNext() && end == null && !end.equals(start)) {
+		while(end_iterator.hasNext() && (end == null || !end.equals(start))) {
 			Raster t_raster = end_iterator.next();
-			if(t_raster.getX() > (img.getWidth()-5) && ImageUtil.greaterEqual(t_raster.getColor(), Color.WHITE)
-					|| t_raster.getY() == (img.getHeight()-5) && ImageUtil.greaterEqual(t_raster.getColor(), Color.WHITE)) {
+			if(t_raster.getX() > (img.getWidth()-5) &&  Color.WHITE.equals(t_raster.getColor())
+					|| t_raster.getY() == (img.getHeight()-5) && Color.WHITE.equals(t_raster.getColor())) {
 
 				//Mit t_raster.getMiddle() würdest du den Mittelpunkt bekommen falls du willst
 				//So bekommst den Anfangswert links oben

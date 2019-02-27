@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Dummy_Control implements Control
 {
-    private Path IMAGE_PATH = Paths.get("image_Papier.jpg");
+    private Path IMAGE_PATH = Paths.get("image_1.png");
     @Override
     public BufferedImage getImage()
     {
