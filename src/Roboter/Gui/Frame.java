@@ -180,8 +180,10 @@ public class Frame extends JFrame
                 grabFrame.addActionListener((e) ->
                 {
                     original = completeControl.getImage();
+                    ImageUtil.writeImage(original, new File("original.png"));
                     image = ImageUtil.reColor(original, 1);
-//                    image = ImageUtil.rotate(original);
+                    image = ImageUtil.rotate(image);
+                    image = ImageUtil.reColor(image, 1);
                     image = ImageUtil.cutToSize(image, 5);
                     startCoord = ImageUtil.getStart(original,5);
                     setMazeImage(image);

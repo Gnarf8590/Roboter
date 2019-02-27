@@ -31,6 +31,7 @@ public class FrameGrabber
             Mat srcFrame = new Mat();
 
             camera.read(srcFrame);
+
             BufferedImage image = convertToImage(srcFrame);
             srcFrame.release();
             return image;

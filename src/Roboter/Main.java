@@ -8,6 +8,7 @@ import Roboter.Gui.Gui;
 import Roboter.Labyrinth.Labyrinth;
 import Roboter.Labyrinth.LabyrinthControl;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,6 +20,7 @@ public class Main
     {
         Control control = new GetRoboterCoordinates();
         LabyrinthControl labyrinthControl = new Labyrinth();
+
 
         Gui gui = new Gui(control, labyrinthControl);
     }
