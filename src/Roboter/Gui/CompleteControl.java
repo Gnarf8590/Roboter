@@ -4,13 +4,7 @@ import Roboter.Ansteuerung.Control;
 import Roboter.Coordinates;
 import Roboter.Labyrinth.LabyrinthControl;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class CompleteControl implements Control, LabyrinthControl

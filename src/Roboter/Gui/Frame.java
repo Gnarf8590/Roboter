@@ -2,6 +2,7 @@ package Roboter.Gui;
 
 import Roboter.Coordinates;
 import Roboter.ImageUtil;
+import Roboter.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,18 +101,23 @@ public class Frame extends JFrame
         }
 
 
-        int count = 1;
-        for (Coordinates coordinates : solution)
+        if(Main.DEBUG)
         {
-            g2dString.drawString(String.valueOf(count++),coordinates.x, coordinates.y);
+            int count = 1;
+            for (Coordinates coordinates : solution)
+            {
+                g2dString.drawString(String.valueOf(count++), coordinates.x, coordinates.y);
+            }
         }
 
 
         setMazeImage(solutionImage);
-        ImageUtil.writeImage(solutionImage,new File("solution.png"));
+
+        if(Main.DEBUG)
+            ImageUtil.writeImage(solutionImage,new File("solution.png"));
     }
 
-    private void setMazeImage(BufferedImage image)
+    public void setMazeImage(BufferedImage image)
     {
         picLabel.setIcon(new ImageIcon(image));
     }

@@ -1,7 +1,6 @@
 package Roboter.Gui;
 
 import Roboter.Ansteuerung.Control;
-
 import Roboter.Labyrinth.LabyrinthControl;
 
 public class Gui

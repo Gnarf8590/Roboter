@@ -2,6 +2,7 @@ package Roboter.Labyrinth;
 
 import Roboter.Coordinates;
 import Roboter.ImageIterator;
+import Roboter.Main;
 import Roboter.Raster;
 
 import java.awt.*;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -29,10 +29,40 @@ public class Transformer
 
     public Node[][] transform()
     {
-        ImageIterator imageIterator = ImageIterator.getIterator(image,rasterSize);
         int countX = image.getWidth()/rasterSize    + (image.getWidth()  % rasterSize == 0 ? 0 : 1);
         int countY = image.getHeight()/rasterSize   + (image.getHeight() % rasterSize == 0 ? 0 : 1);
 
+        Node[][] nodes = createNodes(countX, countY);
+
+        fillNodes(nodes, countX, countY);
+
+
+        if(Main.DEBUG)
+        {
+            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("sdsa.txt"), CREATE, WRITE))
+            {
+                for (Node[] nodeY : nodes)
+                {
+                    for (Node nodeX : nodeY)
+                    {
+                        if (nodeX.isPath())
+                            bufferedWriter.append(" ");
+                        else
+                            bufferedWriter.append("#");
+                    }
+                    bufferedWriter.newLine();
+                }
+            } catch (IOException ioE)
+            {
+                ioE.printStackTrace();
+            }
+        }
+
+        return nodes;
+    }
+
+    private Node[][] createNodes(int countX, int countY)
+    {
         Node[][] nodes = new Node[countY][countX];
 
         for(int y = 0; y < nodes.length; y++)
@@ -42,8 +72,13 @@ public class Transformer
                 nodes[y][x] = new Node(x*rasterSize,y*rasterSize);
             }
         }
+        return nodes;
+    }
 
-        for(int y = 0; y < countY; y++)
+    private void fillNodes(Node[][] nodes, int countX, int countY)
+    {
+        ImageIterator imageIterator = ImageIterator.getIterator(image, rasterSize);
+        for (int y = 0; y < countY; y++)
         {
             for (int x = 0; x < countX; x++)
             {
@@ -60,28 +95,8 @@ public class Transformer
                     node.setUp(nodes[y-1][x]);
                 if(y < countY-1)
                     node.setDown(nodes[y+1][x]);
-
             }
         }
-        try(BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get("sdsa.txt"),CREATE,WRITE))
-        {
-            for (Node[] nodeY : nodes)
-            {
-                for (Node nodeX : nodeY)
-                {
-                    if (nodeX.isPath())
-                        bufferedWriter.append(" ");
-                    else
-                        bufferedWriter.append("#");
-                }
-                bufferedWriter.newLine();
-            }
-        }catch (IOException ioE)
-        {
-            ioE.printStackTrace();
-        }
-
-        return nodes;
     }
 
     public List<Coordinates> transform(List<Node> nodeList)

@@ -1,30 +1,36 @@
 package Roboter.Labyrinth;
 
 import java.util.Objects;
-import java.util.function.Function;
 
-public class Node
+public class Node implements Comparable<Node>
 {
     private int x;
     private int y;
+
     private Node up;
     private Node down;
     private Node left;
     private Node right;
 
+
+    private Node prev;
+    private int cost;
+    private int prio;
+
     private boolean isPath;
-    private boolean visited;
 
     public Node(int x, int y)
     {
         this.x = x;
         this.y = y;
-        up = null;
-        down = null;
-        left = null;
-        right = null;
+        this.prev = null;
+        this.up = null;
+        this.down = null;
+        this.left = null;
+        this.right = null;
         isPath = false;
-        visited = false;
+        cost = 0;
+        prio = 0;
     }
 
     public int getX() {
@@ -37,50 +43,15 @@ public class Node
     }
 
 
-    public void visited()
+    public int getCost()
     {
-        visited = true;
+        return cost;
     }
 
-    public boolean isVisited()
+    public void setCost(int cost)
     {
-        return visited;
+        this.cost = cost;
     }
-
-    public boolean isSame(Node other)
-    {
-        return !isBelow(other) && !isAbove(other);
-    }
-
-    public boolean isAbove(Node other)
-    {
-        return is((node) -> node.getUp(), other);
-    }
-
-    public boolean isBelow(Node other)
-    {
-        return is((node) -> node.getDown(), other);
-    }
-
-    private boolean is(Function<Node , Node> function, Node other)
-    {
-        int count;
-        Node up = function.apply(this);
-        for(count = 0; up != null; count++)
-        {
-            up = function.apply(up);
-        }
-
-        int countOther;
-        up = function.apply(other);
-        for(countOther = 0; up != null; countOther++)
-        {
-            up =  function.apply(up);
-        }
-
-        return count < countOther;
-    }
-
 
     public boolean isPath()
     {
@@ -92,31 +63,15 @@ public class Node
         isPath = path;
     }
 
-    public boolean isBorder()
+
+    public void setPrev(Node prev)
     {
-        if(isCorner())
-            return false;
-
-
-        return (up == null || down == null || left == null || right == null) && !isPath;
+        this.prev = prev;
     }
 
-    public boolean isCorner()
+    public Node getPrev()
     {
-        boolean isCorner = false;
-        //upper left Corner
-        isCorner |= up == null && left == null;
-
-        //upper rigth Corner
-        isCorner |= up == null && right == null;
-
-        //down left Corner
-        isCorner |= down == null && left == null;
-
-        //down rigth Corner
-        isCorner |= down == null && right == null;
-
-        return isCorner;
+        return prev;
     }
 
     public Node getUp()
@@ -159,6 +114,16 @@ public class Node
         this.right = right;
     }
 
+    public void setPrio(int prio)
+    {
+        this.prio = prio;
+    }
+
+    public int getPrio()
+    {
+        return prio;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -167,27 +132,31 @@ public class Node
         if (o == null || getClass() != o.getClass())
             return false;
         Node node = (Node) o;
-        return isPath == node.isPath &&
-                visited == node.visited &&
-                up == node.up &&
-                down == node.down &&
-                left == node.left &&
-                right == node.right;
+        return x == node.x && y == node.y;
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(up, down, left, right, isPath, visited);
+        return Objects.hash(x, y);
     }
 
     @Override
     public String toString()
     {
-        return "Node{" +
-                "isPath=" + isPath +
-                ",isCorner=" +isCorner()+
-                ",isBorder=" +isBorder()+
-                '}';
+        return "Node{" + "x=" + x + ", y=" + y + ", cost=" + cost + ", prio=" + prio + ", isPath=" + isPath + '}';
+    }
+
+    @Override
+    public int compareTo(Node o)
+    {
+        int comp = Integer.compare(prio, o.prio);
+        if(comp == 0)
+            comp = Integer.compare(x, o.x);
+        if(comp == 0)
+            comp = Integer.compare(y, o.y);
+
+        return comp;
     }
 }
+

@@ -1,6 +1,6 @@
 package Roboter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
