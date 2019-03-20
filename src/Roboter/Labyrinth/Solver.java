@@ -16,7 +16,7 @@ public class Solver
     private BufferedImage image;
 
 
-    private static final int COST = 10;
+    private static final int COST = 1;
     public Solver(Node[][] nodes, BufferedImage image)
     {
         this.nodes = nodes;
@@ -48,7 +48,7 @@ public class Solver
         }
         ImageUtil.writeImage(image, new File("sadsa.png"));
         List<Node> path = new ArrayList<>();
-        //if(current == end)
+        if(current == end)
         {
             Node node = current;
             while (node != null)
@@ -57,6 +57,8 @@ public class Solver
                 node = node.getPrev();
             }
         }
+
+
         Collections.reverse(path);
 
 
@@ -179,7 +181,7 @@ public class Solver
     private Node getEnd()
     {
         int startY = -1;
-        for(int y = 20; y < nodes.length; y++)
+        for(int y = 10; y < nodes.length; y++)
         {
             if(nodes[y][nodes[y].length-1].isPath() && startY == -1)
             {

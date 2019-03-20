@@ -11,12 +11,11 @@ import java.util.List;
 public abstract class ImageIterator implements Iterator<Raster> {
 
     private final BufferedImage image;
-    private final WritableRaster raster;
     private final int rasterSize;
     private int x;
     private int y;
 
-    public enum Type{X,Y,Lab};
+    public enum Type{X,Y};
     public static ImageIterator getIterator(BufferedImage image, int rasterSize)
     {
         return new XIterator(image,rasterSize,0);
@@ -43,7 +42,6 @@ public abstract class ImageIterator implements Iterator<Raster> {
     {
         this.image = image;
         this.rasterSize = rasterSize;
-        raster = image.getRaster();
 
         x = 0;
         y = 0;
@@ -54,48 +52,6 @@ public abstract class ImageIterator implements Iterator<Raster> {
         Color color = new Color(image.getRGB(x,y));
         return color;
     }
-
-
-    public int[] getRasterCount()
-    {
-        int xcount = (image.getWidth()/rasterSize);
-        int ycount = (image.getHeight()/rasterSize);
-
-        if(image.getWidth() % rasterSize != 0)
-            xcount++;
-
-        if(image.getHeight() % rasterSize != 0)
-            ycount++;
-
-
-        int[] r = new int[2];
-        r[0] = xcount;
-        r[1] = ycount;
-
-        return r;
-    }
-
-    public int getRasterCountTotal()
-    {
-        int xcount = image.getWidth()/rasterSize;
-        int ycount = image.getHeight()/rasterSize;
-
-        return xcount * ycount;
-    }
-    
-    public Raster getNext() {return null;}
-    
-    public Raster getPrev() {return null;}
-    
-    public Raster getUp() {return null;}
-    
-    public Raster getDown() {return null;}
-    
-    public boolean hasAbove() {return false;}
-
-    public boolean hasPrev() {return false;}
-
-    public boolean hasBeneath() {return false;}
 
 
     private static class XIterator extends ImageIterator

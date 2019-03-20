@@ -1,6 +1,7 @@
 package Roboter.Ansteuerung;
 
 import Roboter.Coordinates;
+import Roboter.Main;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -11,6 +12,7 @@ public class GetRoboterCoordinates implements Control
 {
 	private FrameGrabber fgrabber;
 	private RobotControl rcontrol;
+	private List<Position> positions;
 
 	public GetRoboterCoordinates() {
 		fgrabber = new FrameGrabber();
@@ -20,6 +22,7 @@ public class GetRoboterCoordinates implements Control
     @Override
     public BufferedImage getImage()
 	{
+
 		try
 		{
 			rcontrol.moveForCamera();
@@ -42,8 +45,8 @@ public class GetRoboterCoordinates implements Control
 	{
 		double startwert_x = 242;
 		double startwert_y = -644;
-				
-		List<Position> al_ArmKoordinaten = new ArrayList<>();
+
+        positions = new ArrayList<>();
 		
 		for(Coordinates akt_koordinate : coordinates)
 		{
@@ -51,17 +54,18 @@ public class GetRoboterCoordinates implements Control
 			double target_y = startwert_y + (akt_koordinate.y * 0.36);
 			
 			Position bsp_Position = new Position(target_x, target_y, 400, 180, 0, 50);
-			System.out.println(akt_koordinate);
-			System.out.println(bsp_Position);
-			System.out.println();
-			if(target_x < -220 || target_x > 244)
-				throw new IllegalArgumentException();
-			if(target_y < -590 || target_y > -329)
-				throw new IllegalArgumentException();
-			
-			al_ArmKoordinaten.add(bsp_Position);
+			if(Main.DEBUG) {
+                System.out.println(akt_koordinate);
+                System.out.println(bsp_Position);
+                System.out.println();
+            }
+			//if(target_x < -220 || target_x > 244)
+				//throw new IllegalArgumentException();
+			//if(target_y < -590 || target_y > -329)
+				//throw new IllegalArgumentException();
+
+            positions.add(bsp_Position);
 		}
-		sendPositions(al_ArmKoordinaten);
 	}
 
 	@Override
@@ -73,6 +77,17 @@ public class GetRoboterCoordinates implements Control
 		}
 	}
 
+
+	public void moveRobot()
+    {
+        sendPositions(positions);
+        try {
+            rcontrol.moveForCamera();
+        } catch (IOException e) {
+
+        }
+    }
+
 	private void sendPositions(List<Position> armcoordinates)
 	{
     	try
@@ -82,7 +97,7 @@ public class GetRoboterCoordinates implements Control
 			}
 		}catch (IOException ioE)
 		{
-
+			ioE.printStackTrace();
 		}
 	}
 }

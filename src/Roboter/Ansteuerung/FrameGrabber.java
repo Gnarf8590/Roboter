@@ -16,23 +16,23 @@ public class FrameGrabber
         System.loadLibrary("opencv_ffmpeg343_64");
     }
 
-    private VideoCapture camera;
+
 
     public FrameGrabber()
     {
-         camera = new VideoCapture("rtsp://127.0.0.1:8554/mystream");
     }
 
     public BufferedImage readImage()
     {
+        VideoCapture camera = new VideoCapture("rtsp://127.0.0.1:8554/mystream");
         if(camera.isOpened())
         {
             Mat srcFrame = new Mat();
-
             camera.read(srcFrame);
 
             BufferedImage image = convertToImage(srcFrame);
             srcFrame.release();
+            camera.release();
             return image;
         }else
             System.err.println("Kamera konnte nicht geöffnet werden");

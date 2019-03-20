@@ -13,5 +13,6 @@ public interface Control
     public void moveTo(Coordinates coordinates);
 
     public void setSolution(List<Coordinates> coordinates);
+    public void moveRobot();
     public void close();
 }

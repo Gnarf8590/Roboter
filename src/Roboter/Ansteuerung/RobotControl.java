@@ -19,12 +19,11 @@ public class RobotControl implements AutoCloseable
     private OutputStream writer;
     private InputStream reader;
 
-    private boolean isHandOn = false;
     public RobotControl()
     {
         try
         {
-            System.out.println("Try open Socket");
+            System.out.println("Try opening Socket");
             socket = new Socket("192.168.1.223",10001);
             writer = socket.getOutputStream();
             reader = socket.getInputStream();
@@ -112,6 +111,20 @@ public class RobotControl implements AutoCloseable
     public String enableServo() throws IOException
     {
         send("1;1;SRVON");
+
+        return receive();
+    }
+
+    public String startPump() throws IOException
+    {
+        send("1;1;OUT=5;1");
+
+        return receive();
+    }
+
+    public String stopPump() throws IOException
+    {
+        send("1;1;OUT=5;0");
 
         return receive();
     }

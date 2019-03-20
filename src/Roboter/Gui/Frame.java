@@ -3,6 +3,7 @@ package Roboter.Gui;
 import Roboter.Coordinates;
 import Roboter.ImageUtil;
 import Roboter.Main;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +15,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 public class Frame extends JFrame
 {
     private final CompleteControl completeControl;
-
+    public static final int RASTERSIZE = 4;
     private BufferedImage original;
-    private BufferedImage image;
+    private BufferedImage cut;
     private Coordinates startCoord;
 
     private List<Coordinates> userSolution;
@@ -82,7 +85,7 @@ public class Frame extends JFrame
         if(solution.size() == 0)
             return;
 
-        BufferedImage solutionImage = ImageUtil.deepCopy(image);
+        BufferedImage solutionImage = ImageUtil.deepCopy(cut);
         Coordinates last = solution.get(0);
 
         Graphics2D g2d = solutionImage.createGraphics();
@@ -167,6 +170,7 @@ public class Frame extends JFrame
                 isUserPainting = false;
                 userSolution = removeShort(userSolution);
                 paintSolution(userSolution);
+                start.setEnabled(true);
             }
         });
 
@@ -182,44 +186,44 @@ public class Frame extends JFrame
                                         }
                                     });
                 grabFrame.addActionListener((e) ->
-                    CompletableFuture.runAsync(() -> {
+                    runAsync(() -> {
                         original = completeControl.getImage();
 
-                        image = ImageUtil.reColor(original);
-                        image = ImageUtil.rotate(image);
-                        image = ImageUtil.reColor(image);
+                        original = ImageUtil.reColor(original);
+                        original = ImageUtil.rotate(original);
+                        original = ImageUtil.reColor(original);
 
-                        image = ImageUtil.cutToSize(image, 2);
-                        startCoord = ImageUtil.getStart(original, 2);
-                        setMazeImage(image);
+                        cut = ImageUtil.cutToSize(original, RASTERSIZE);
+                        startCoord = ImageUtil.getStart(original, RASTERSIZE);
+
+                        setMazeImage(cut);
                         start.setEnabled(true);
                     }));
 
-        start.addActionListener(e -> CompletableFuture.runAsync(() ->
+        start.addActionListener(e -> runAsync(() ->
                                                                 {
                                                                     start.setEnabled(false);
                                                                     stop.setEnabled(true);
-                                                                    List<Coordinates> solution;
-                                                                    if (userSolution.size() > 0)
-                                                                        solution = userSolution;
-                                                                    else
-                                                                        solution = completeControl.solve(image);
 
-                                                                    paintSolution(solution);
-                                                                    completeControl.setSolution(mapCoordinates(solution));
+                                                                    if (userSolution.size() > 0)
+                                                                        completeControl.setSolution(mapCoordinates(userSolution));
+
+                                                                    completeControl.moveRobot();
                                                                 }
                                 ));
         reset.addActionListener(e -> {
             userSolution.clear();
-            setMazeImage(image);
+            setMazeImage(cut);
         });
 
-        solution.addActionListener(e -> {
-            reset.setEnabled(false);
-            List<Coordinates> cords = completeControl.solve(image);
-            paintSolution(cords);
-            completeControl.setSolution(cords);
-        });
+        solution.addActionListener(e ->
+            runAsync(() -> {
+                reset.setEnabled(false);
+                List<Coordinates> cords = completeControl.solve(cut);
+                paintSolution(cords);
+                completeControl.setSolution(mapCoordinates(cords));
+            }
+        ));
 
         stop.addActionListener(e ->
                                {

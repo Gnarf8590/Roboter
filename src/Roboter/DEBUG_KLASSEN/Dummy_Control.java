@@ -43,6 +43,11 @@ public class Dummy_Control implements Control
     }
 
     @Override
+    public void moveRobot() {
+
+    }
+
+    @Override
     public void setSolution(List<Coordinates> coordinates)
     {
 

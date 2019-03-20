@@ -43,6 +43,11 @@ public class CompleteControl implements Control, LabyrinthControl
     }
 
     @Override
+    public void moveRobot() {
+        control.moveRobot();
+    }
+
+    @Override
     public List<Coordinates> solve(BufferedImage image)
     {
         return labyrinthControl.solve(image);
