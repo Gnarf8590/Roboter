@@ -1,6 +1,7 @@
 package Roboter.Labyrinth;
 
 import Roboter.ImageUtil;
+import Roboter.Main;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -46,7 +47,10 @@ public class Solver
 
             expandNode(current);
         }
-        ImageUtil.writeImage(image, new File("sadsa.png"));
+
+        if(Main.DEBUG)
+            ImageUtil.writeImage(image, new File("sadsa.png"));
+
         List<Node> path = new ArrayList<>();
         if(current == end)
         {
@@ -113,6 +117,7 @@ public class Solver
         next.add(current.getDown());
         next.add(current.getLeft());
         next.add(current.getRight());
+        Set<Node> toAdd = new HashSet<>();
 
         for (Node node : next)
         {
@@ -134,11 +139,14 @@ public class Solver
             node.setPrio(cost + node.getPrio());
 
             //showCurrent(node);
-            openList.add(node);
+            toAdd.add(node);
         }
 
-        //Resort because of possible Prio update
-        openList = new TreeSet<>(openList);
+        if(!toAdd.isEmpty()) {
+            //Resort because of possible Prio update
+            openList.addAll(toAdd);
+            openList = new TreeSet<>(openList);
+        }
     }
 
     private void showCurrent(Node node)
