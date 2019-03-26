@@ -6,7 +6,11 @@ import Roboter.Main;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class GetRoboterCoordinates implements Control
 {
@@ -16,7 +20,7 @@ public class GetRoboterCoordinates implements Control
 
 	public GetRoboterCoordinates() {
 		fgrabber = new FrameGrabber();
-		rcontrol = new RobotControl();
+        rcontrol = new RobotControl();
 	}
 
     @Override
@@ -26,9 +30,8 @@ public class GetRoboterCoordinates implements Control
 		try
 		{
 			rcontrol.moveForCamera();
-			Thread.sleep(1_000);//sicher gehen dass Arm aus dem Bild ist
 			return fgrabber.readImage();
-		} catch (IOException | InterruptedException e)
+		} catch (IOException e)
 		{
 			return null;
 		}
@@ -53,12 +56,13 @@ public class GetRoboterCoordinates implements Control
 			double target_x = startwert_x - (akt_koordinate.x * 0.36);
 			double target_y = startwert_y + (akt_koordinate.y * 0.36);
 			
-			Position bsp_Position = new Position(target_x, target_y, 400, 180, 0, 50);
+			Position bsp_Position = new Position(target_x, target_y, 310, 180, 0, 50);
 			if(Main.DEBUG) {
                 System.out.println(akt_koordinate);
                 System.out.println(bsp_Position);
                 System.out.println();
             }
+
 			//if(target_x < -220 || target_x > 244)
 				//throw new IllegalArgumentException();
 			//if(target_y < -590 || target_y > -329)
@@ -80,24 +84,26 @@ public class GetRoboterCoordinates implements Control
 
 	public void moveRobot()
     {
-        sendPositions(positions);
+
         try {
+			sendPositions(positions);
+        	rcontrol.moveZ(100);
+        	try {
+				Thread.sleep(500);
+			}catch (InterruptedException intE)
+			{}
             rcontrol.moveForCamera();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 
-	private void sendPositions(List<Position> armcoordinates)
+	private void sendPositions(List<Position> armcoordinates) throws IOException
 	{
-    	try
-		{
-			for(Position akt_pos : armcoordinates) {
-				rcontrol.moveToPosition(akt_pos);
-			}
-		}catch (IOException ioE)
-		{
-			ioE.printStackTrace();
+
+		for (Position armcoordinate : armcoordinates) {
+			rcontrol.moveToPosition(armcoordinate);
 		}
+
 	}
 }

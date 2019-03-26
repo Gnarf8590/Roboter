@@ -30,13 +30,7 @@ public class RobotControl implements AutoCloseable
             enableCommunication();
             enableOperation();
             enableServo();
-            override(50);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
-            //socket = new Socket("192.168.0.3",8888);
+            override(25);
 
         } catch (IOException e)
         {
@@ -183,8 +177,8 @@ public class RobotControl implements AutoCloseable
 */
 
         send(String.format("1;1;EXECMOV P_CURR+(%s,%s,%s,%s,%s,%s)", x, y, z, a, b, c));
-        receive();
         waitBetweenMoves();
+        receive();
     }
 
     public void moveToStartPosition() throws IOException

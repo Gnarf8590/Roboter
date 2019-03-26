@@ -13,7 +13,7 @@ public class FrameGrabber
     static
     {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        System.loadLibrary("opencv_ffmpeg343_64");
+        System.loadLibrary("opencv_ffmpeg400_64");
     }
 
 

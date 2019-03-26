@@ -152,7 +152,7 @@ public class ImageUtil
             }
         }
 
-        return new Coordinates(END_X,  END_Y);
+        return new Coordinates(END_X,  END_Y+rastersize*5);
     }
 
     public static BufferedImage rotate(BufferedImage image)
